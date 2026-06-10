@@ -7,19 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #0d1117; color: #c9d1d9; }
-        .chat-container { height: calc(100vh - 180px); }
+        .chat-container { height: calc(100vh - 140px); }
     </style>
 </head>
 <body class="font-sans antialiased flex flex-col h-screen">
 
     <header class="bg-[#161b22] border-b border-[#30363d] p-4 flex items-center justify-between shadow-md">
         <div class="flex items-center space-x-3">
-            <div class="bg-purple-600 text-white p-2 rounded-lg font-bold text-xl">R</div>
+            <div class="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl">R</div>
             <div>
                 <h1 class="text-lg font-bold text-white tracking-wide">Relectrónica</h1>
-                <p class="text-xs text-purple-400 flex items-center">
-                    <span class="w-2 h-2 rounded-full bg-purple-500 inline-block mr-1 animate-pulse"></span> 
-                    Motor Cohere Activo (Pre-Visión)
+                <p class="text-xs text-green-400 flex items-center">
+                    <span class="w-2 h-2 rounded-full bg-green-400 inline-block mr-1 animate-pulse"></span> 
+                    Línea Directa Corregida
                 </p>
             </div>
         </div>
@@ -28,149 +28,100 @@
     <main id="chat-box" class="flex-1 p-4 overflow-y-auto chat-container space-y-4">
         <div class="flex justify-start">
             <div class="bg-[#21262d] border border-[#30363d] text-gray-200 p-3 rounded-lg max-w-[85%] shadow-sm">
-                <p class="font-semibold text-purple-400 mb-1">⚡ Relectrónica Bot:</p>
-                ¡Hola Jefferson! He integrado el botón de captura en la barra inferior. El circuito visual está listo; por ahora, como seguimos con Cohere, las consultas deben ser de texto.
+                <p class="font-semibold text-blue-400 mb-1">⚡ Relectrónica Bot:</p>
+                ¡Hola Jefferson! He reconstruido el protocolo de comunicación por completo. Prueba mandando un mensaje ahora, esta línea está reforzada.
             </div>
         </div>
     </main>
 
-    <div id="image-preview-container" class="hidden bg-[#161b22] px-4 py-2 border-t border-[#30363d] flex items-center space-x-2">
-        <div class="relative">
-            <img id="image-preview" class="w-14 h-14 object-cover rounded-lg border border-gray-500">
-            <button id="remove-image-btn" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">×</button>
-        </div>
-        <span class="text-xs text-gray-400">Imagen acoplada en interfaz...</span>
-    </div>
-
     <footer class="bg-[#161b22] border-t border-[#30363d] p-3 flex items-center space-x-2">
-        <label for="file-input" class="cursor-pointer bg-[#21262d] hover:bg-[#30363d] text-gray-300 p-3 rounded-xl transition duration-200 shadow-md flex items-center justify-center select-none">
-            📸
-            <input type="file" id="file-input" accept="image/*" class="hidden">
-        </label>
-
         <input type="text" id="user-input" 
-               class="flex-1 bg-[#0d1117] border border-[#30363d] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 text-sm" 
+               class="flex-1 bg-[#0d1117] border border-[#30363d] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 text-sm" 
                placeholder="Escribe la falla...">
-        <button id="send-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 py-3 rounded-xl transition duration-200 text-sm shadow-md">
+        <button id="send-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl transition duration-200 text-sm shadow-md">
             Enviar
         </button>
     </footer>
 
     <script>
-        // Tu clave real de Cohere activa
-        const COHERE_API_KEY = "594SHpSQqQo0yWaa48hHgwDbRCijYSVD2biJOLLL"; 
+        const HF_TOKEN = "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"; 
         const SYSTEM_INSTRUCTION = "Eres un ingeniero electrónico experto. Tu propósito es ayudar a Jefferson en su taller Relectrónica. Responde en español, claro y directo usando listas y negritas.";
 
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
-        const fileInput = document.getElementById('file-input');
-        const previewContainer = document.getElementById('image-preview-container');
-        const previewImg = document.getElementById('image-preview');
-        const removeImageBtn = document.getElementById('remove-image-btn');
 
-        let imagenBase64Full = null;
-
-        // Capturar y mostrar la miniatura de la imagen seleccionada en el teléfono
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                imagenBase64Full = event.target.result;
-                previewImg.src = imagenBase64Full;
-                previewContainer.classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Quitar la foto de la vista previa
-        removeImageBtn.addEventListener('click', () => {
-            limpiarVariablesImagen();
-        });
-
-        function limpiarVariablesImagen() {
-            imagenBase64Full = null;
-            fileInput.value = "";
-            previewContainer.classList.add('hidden');
-        }
-
-        function appendMessage(sender, text, isUser, imgSrc = null) {
+        function appendMessage(sender, text, isUser) {
             const messageDiv = document.createElement('div');
             messageDiv.className = isUser ? "flex justify-end" : "flex justify-start";
             
             const contentDiv = document.createElement('div');
             contentDiv.className = isUser 
-                ? "bg-purple-600 text-white p-3 rounded-lg max-w-[85%] shadow-sm" 
+                ? "bg-blue-600 text-white p-3 rounded-lg max-w-[85%] shadow-sm" 
                 : "bg-[#21262d] border border-[#30363d] text-gray-200 p-3 rounded-lg max-w-[85%] shadow-sm";
             
-            let imageHtml = imgSrc ? `<img src="${imgSrc}" class="w-full max-h-48 object-contain rounded-md mb-2 border border-gray-600">` : "";
-            let formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\"/g, '<strong>$1</strong>');
-
-            contentDiv.innerHTML = `<p class="font-semibold text-xs ${isUser ? 'text-purple-200' : 'text-purple-400'} mb-1">${sender}:</p>${imageHtml}<div>${formattedText}</div>`;
+            contentDiv.innerHTML = `<p class="font-semibold text-xs ${isUser ? 'text-blue-200' : 'text-blue-400'} mb-1">${sender}:</p><div>${text.replace(/\n/g, '<br>')}</div>`;
             
             messageDiv.appendChild(contentDiv);
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        async function sendMessageToCohere(userText) {
-            const url = "https://api.cohere.com/v1/chat";
+        async function sendMessageToHuggingFace(userText) {
+            const url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct";
+            
+            // Estructuramos el prompt en el formato JSON puro que exige la API de inferencia básica
+            const promptCompleto = `${SYSTEM_INSTRUCTION}\n\nUsuario: ${userText}\nAsistente:`;
 
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 
-                        'Authorization': `Bearer ${COHERE_API_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Authorization': `Bearer ${HF_TOKEN}`,
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: userText,
-                        model: "command-r",
-                        preamble: SYSTEM_INSTRUCTION
+                        inputs: promptCompleto,
+                        parameters: {
+                            max_new_tokens: 500,
+                            return_full_text: false
+                        },
+                        options: {
+                            wait_for_model: true
+                        }
                     })
                 });
 
                 const data = await response.json();
                 
-                if (response.ok && data.text) {
-                    return data.text.trim();
+                // Manejo riguroso de la respuesta del servidor
+                if (response.ok && data && data[0] && data[0].generated_text) {
+                    return data[0].generated_text.trim();
+                } else if (data.error) {
+                    return "⚠️ Respuesta del servidor: " + data.error;
                 } else {
-                    return `⚠️ Error de validación: ${data.message || 'Falla en el bloque de datos'}`;
+                    return "❌ Error en el formato de datos devuelto por Hugging Face.";
                 }
             } catch (error) {
                 console.error("Error de red:", error);
-                return "❌ Error físico de conexión con Cohere.";
+                return "❌ Error físico de comunicación. Verifica el estado del internet o los permisos de la App.";
             }
         }
 
         async function handleSend() {
             const text = userInput.value.trim();
-            if (!text && !imagenBase64Full) return;
+            if (!text) return;
 
-            // Si intentas mandar una foto con Cohere activo, el chat te avisará que solo procesa texto
-            const imgParaMostrar = imagenBase64Full;
-            if (imgParaMostrar && !text) {
-                appendMessage("Jefferson", "", true, imgParaMostrar);
-                limpiarVariablesImagen();
-                appendMessage("⚡ Relectrónica Bot", "⚠️ Recuerda que el motor actual de **Cohere** solo procesa texto. Agrega una descripción escrita para poder ayudarte.", false);
-                return;
-            }
-
-            appendMessage("Jefferson", text, true, imgParaMostrar);
+            appendMessage("Jefferson", text, true);
             userInput.value = "";
-            limpiarVariablesImagen();
 
             const loadingDiv = document.createElement('div');
-            loadingDiv.className = "flex justify-start text-sm text-gray-500 animate-pulse pl-2";
+            loadingDiv.className = "flex justify-start text-sm text-gray-500 animate-pulse";
             loadingDiv.id = "loading";
             loadingDiv.innerText = "Relectrónica Bot analizando...";
             chatBox.appendChild(loadingDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
 
-            const aiResponse = await sendMessageToCohere(text);
+            const aiResponse = await sendMessageToHuggingFace(text);
 
             if(document.getElementById('loading')) {
                 document.getElementById('loading').remove();
