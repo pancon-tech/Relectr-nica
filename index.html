@@ -200,7 +200,7 @@
 
     <header>
         <div class="logo-container">
-            <img src="logo.png" alt="Relectrónica Logo" onerror="this.style.display='none';">
+            <img src="logo.png" alt="Relectrónica Logo">
         </div>
         <div class="header-info">
             <h1>Relectrónica</h1>
@@ -273,8 +273,8 @@
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        // Modelo vigente y con soporte oficial
-                        model: 'command-r-plus',
+                        // Modelo vigente con soporte oficial estable
+                        model: 'command-r-08-2024',
                         message: query,
                         preamble: "Eres un asistente técnico experto en electrónica, hardware, diagnóstico de tarjetas PCB y reparación de pantallas LED. Responde de forma precisa y profesional a Jefferson."
                     })
