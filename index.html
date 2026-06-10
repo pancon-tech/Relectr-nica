@@ -5,27 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relectrónica - Asistente Técnico</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; }
+        .chat-container { height: calc(100vh - 180px); }
+    </style>
 </head>
-<body class="font-sans antialiased flex flex-col h-screen bg-[#0d1117] text-[#c9d1d9]">
+<body class="font-sans antialiased flex flex-col h-screen">
 
     <header class="bg-[#161b22] border-b border-[#30363d] p-4 flex items-center justify-between shadow-md">
         <div class="flex items-center space-x-3">
-            <div class="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl">R</div>
+            <div class="bg-purple-600 text-white p-2 rounded-lg font-bold text-xl">R</div>
             <div>
                 <h1 class="text-lg font-bold text-white tracking-wide">Relectrónica</h1>
-                <p class="text-xs text-blue-400 flex items-center">
-                    <span class="w-2 h-2 rounded-full bg-blue-500 inline-block mr-1 animate-pulse"></span> 
-                    Preparado para Gemini Vision v3.0
+                <p class="text-xs text-purple-400 flex items-center">
+                    <span class="w-2 h-2 rounded-full bg-purple-500 inline-block mr-1 animate-pulse"></span> 
+                    Motor Cohere Activo (Pre-Visión)
                 </p>
             </div>
         </div>
     </header>
 
-    <main id="chat-box" class="flex-1 p-4 overflow-y-auto space-y-4" style="height: calc(100vh - 180px);">
+    <main id="chat-box" class="flex-1 p-4 overflow-y-auto chat-container space-y-4">
         <div class="flex justify-start">
             <div class="bg-[#21262d] border border-[#30363d] text-gray-200 p-3 rounded-lg max-w-[85%] shadow-sm">
-                <p class="font-semibold text-blue-400 mb-1">⚡ Relectrónica Bot:</p>
-                ¡Circuito de visión cableado, Jefferson! El botón de captura ya está operativo en la barra inferior. Coloca tu clave válida de AI Studio arriba para habilitar el análisis de imágenes.
+                <p class="font-semibold text-purple-400 mb-1">⚡ Relectrónica Bot:</p>
+                ¡Hola Jefferson! He integrado el botón de captura en la barra inferior. El circuito visual está listo; por ahora, como seguimos con Cohere, las consultas deben ser de texto.
             </div>
         </div>
     </main>
@@ -35,25 +39,27 @@
             <img id="image-preview" class="w-14 h-14 object-cover rounded-lg border border-gray-500">
             <button id="remove-image-btn" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">×</button>
         </div>
-        <span class="text-xs text-gray-400">Imagen acoplada para análisis...</span>
+        <span class="text-xs text-gray-400">Imagen acoplada en interfaz...</span>
     </div>
 
     <footer class="bg-[#161b22] border-t border-[#30363d] p-3 flex items-center space-x-2">
-        <label for="file-input" class="cursor-pointer bg-[#21262d] hover:bg-[#30363d] text-gray-300 p-3 rounded-xl transition duration-200 shadow-md flex items-center justify-center">
+        <label for="file-input" class="cursor-pointer bg-[#21262d] hover:bg-[#30363d] text-gray-300 p-3 rounded-xl transition duration-200 shadow-md flex items-center justify-center select-none">
             📸
             <input type="file" id="file-input" accept="image/*" class="hidden">
         </label>
-        
-        <input type="text" id="user-input" class="flex-1 bg-[#0d1117] border border-[#30363d] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 text-sm" placeholder="Escribe la consulta o falla...">
-        
-        <button id="send-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl transition duration-200 text-sm shadow-md">Enviar</button>
+
+        <input type="text" id="user-input" 
+               class="flex-1 bg-[#0d1117] border border-[#30363d] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 text-sm" 
+               placeholder="Escribe la falla...">
+        <button id="send-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 py-3 rounded-xl transition duration-200 text-sm shadow-md">
+            Enviar
+        </button>
     </footer>
 
     <script>
-        // CUANDO TENGAS TU LLAVE CORRECTA DE GOOGLE AI STUDIO (La que empieza por AIzaSy), PEGALA AQUÍ:
-        const GEMINI_API_KEY = "TU_NUEVA_CLAVE_AIZASY_AQUÍ"; 
-
-        const SYSTEM_INSTRUCTION = "Eres un ingeniero electrónico experto en reparación de hardware, pantallas LED y circuitos impresos. Tu propósito es ayudar a Jefferson en su taller Relectrónica en Caracas, Venezuela. Responde siempre en español, de forma clara, técnica pero directa, usando viñetas, listas y negritas.";
+        // Tu clave real de Cohere activa
+        const COHERE_API_KEY = "594SHpSQqQo0yWaa48hHgwDbRCijYSVD2biJOLLL"; 
+        const SYSTEM_INSTRUCTION = "Eres un ingeniero electrónico experto. Tu propósito es ayudar a Jefferson en su taller Relectrónica. Responde en español, claro y directo usando listas y negritas.";
 
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
@@ -63,35 +69,32 @@
         const previewImg = document.getElementById('image-preview');
         const removeImageBtn = document.getElementById('remove-image-btn');
 
-        let imagenBase64 = null;
-        let imagenMimeType = null;
+        let imagenBase64Full = null;
 
-        // Manejo de la selección de imágenes desde el celular
+        // Capturar y mostrar la miniatura de la imagen seleccionada en el teléfono
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            imagenMimeType = file.type;
             const reader = new FileReader();
-            
             reader.onload = (event) => {
-                // Guardamos los datos puros en Base64 quitándole el encabezado del lector
-                imagenBase64 = event.target.result.split(',')[1];
-                
-                // Mostramos la miniatura en la interfaz gráfica
-                previewImg.src = event.target.result;
+                imagenBase64Full = event.target.result;
+                previewImg.src = imagenBase64Full;
                 previewContainer.classList.remove('hidden');
             };
             reader.readAsDataURL(file);
         });
 
-        // Quitar la imagen seleccionada
+        // Quitar la foto de la vista previa
         removeImageBtn.addEventListener('click', () => {
-            imagenBase64 = null;
-            imagenMimeType = null;
+            limpiarVariablesImagen();
+        });
+
+        function limpiarVariablesImagen() {
+            imagenBase64Full = null;
             fileInput.value = "";
             previewContainer.classList.add('hidden');
-        });
+        }
 
         function appendMessage(sender, text, isUser, imgSrc = null) {
             const messageDiv = document.createElement('div');
@@ -99,103 +102,84 @@
             
             const contentDiv = document.createElement('div');
             contentDiv.className = isUser 
-                ? "bg-blue-600 text-white p-3 rounded-lg max-w-[85%] shadow-sm" 
+                ? "bg-purple-600 text-white p-3 rounded-lg max-w-[85%] shadow-sm" 
                 : "bg-[#21262d] border border-[#30363d] text-gray-200 p-3 rounded-lg max-w-[85%] shadow-sm";
             
-            let formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
-            // Si el mensaje incluye una imagen, la incrustamos en la burbuja de chat
             let imageHtml = imgSrc ? `<img src="${imgSrc}" class="w-full max-h-48 object-contain rounded-md mb-2 border border-gray-600">` : "";
-            
-            contentDiv.innerHTML = `<p class="font-semibold text-xs ${isUser ? 'text-blue-200' : 'text-blue-400'} mb-1">${sender}:</p>${imageHtml}<div>${formattedText}</div>`;
+            let formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\"/g, '<strong>$1</strong>');
+
+            contentDiv.innerHTML = `<p class="font-semibold text-xs ${isUser ? 'text-purple-200' : 'text-purple-400'} mb-1">${sender}:</p>${imageHtml}<div>${formattedText}</div>`;
             
             messageDiv.appendChild(contentDiv);
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        async function handleSend() {
-            const text = userInput.value.trim();
-            // Permite enviar si hay texto O si hay una imagen seleccionada
-            if (!text && !imagenBase64) return;
-
-            // Almacenar ruta local de la imagen para mostrarla en el chat del usuario antes de borrar el contenedor
-            const localImgSrc = imagenBase64 ? previewImg.src : null;
-
-            appendMessage("Jefferson", text, true, localImgSrc);
-            
-            // Limpiamos los campos de entrada de inmediato
-            userInput.value = "";
-            previewContainer.classList.add('hidden');
-
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = "flex justify-start text-sm text-gray-500 animate-pulse pl-2";
-            loadingDiv.id = "loading";
-            loadingDiv.innerText = "⚙️ Relectrónica Bot analizando datos...";
-            chatBox.appendChild(loadingDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // Montamos la URL oficial para el modelo definitivo multimedial de Google
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-            // Estructura del paquete de datos adaptado para Texto e Imágenes en paralelo
-            const partsArray = [];
-            
-            // Si el usuario escribió texto, lo añadimos al paquete
-            if (text) {
-                partsArray.push({ text: text });
-            } else {
-                partsArray.push({ text: "Analiza esta imagen detalladamente según tus especificaciones técnicas." });
-            }
-
-            // Si hay una foto cargada, la inyectamos en la estructura que exige el servidor
-            if (imagenBase64) {
-                partsArray.push({
-                    inlineData: {
-                        mimeType: imagenMimeType,
-                        data: imagenBase64
-                    }
-                });
-            }
-
-            const payload = {
-                contents: [{ parts: partsArray }],
-                systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] }
-            };
-
-            // Reseteamos las variables de la imagen para la próxima consulta
-            imagenBase64 = null;
-            imagenMimeType = null;
-            fileInput.value = "";
+        async function sendMessageToCohere(userText) {
+            const url = "https://api.cohere.com/v1/chat";
 
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    headers: { 
+                        'Authorization': `Bearer ${COHERE_API_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: userText,
+                        model: "command-r",
+                        preamble: SYSTEM_INSTRUCTION
+                    })
                 });
 
                 const data = await response.json();
-                if (document.getElementById('loading')) document.getElementById('loading').remove();
-
-                if (response.ok && data.candidates && data.candidates[0].content.parts[0].text) {
-                    appendMessage("⚡ Relectrónica Bot", data.candidates[0].content.parts[0].text, false);
-                } else if (data.error) {
-                    appendMessage("⚡ Relectrónica Bot", `⚠️ Error de autenticación (${data.error.code}): Recuerda que esta función requiere una clave válida AIzaSy de AI Studio.`, false);
+                
+                if (response.ok && data.text) {
+                    return data.text.trim();
                 } else {
-                    appendMessage("⚡ Relectrónica Bot", "❌ Respuesta con formato desconocido.", false);
+                    return `⚠️ Error de validación: ${data.message || 'Falla en el bloque de datos'}`;
                 }
-
             } catch (error) {
-                if (document.getElementById('loading')) document.getElementById('loading').remove();
-                appendMessage("⚡ Relectrónica Bot", "❌ No se pudo conectar con el servidor de Google.", false);
-                console.error(error);
+                console.error("Error de red:", error);
+                return "❌ Error físico de conexión con Cohere.";
             }
+        }
+
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text && !imagenBase64Full) return;
+
+            // Si intentas mandar una foto con Cohere activo, el chat te avisará que solo procesa texto
+            const imgParaMostrar = imagenBase64Full;
+            if (imgParaMostrar && !text) {
+                appendMessage("Jefferson", "", true, imgParaMostrar);
+                limpiarVariablesImagen();
+                appendMessage("⚡ Relectrónica Bot", "⚠️ Recuerda que el motor actual de **Cohere** solo procesa texto. Agrega una descripción escrita para poder ayudarte.", false);
+                return;
+            }
+
+            appendMessage("Jefferson", text, true, imgParaMostrar);
+            userInput.value = "";
+            limpiarVariablesImagen();
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = "flex justify-start text-sm text-gray-500 animate-pulse pl-2";
+            loadingDiv.id = "loading";
+            loadingDiv.innerText = "Relectrónica Bot analizando...";
+            chatBox.appendChild(loadingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const aiResponse = await sendMessageToCohere(text);
+
+            if(document.getElementById('loading')) {
+                document.getElementById('loading').remove();
+            }
+            appendMessage("⚡ Relectrónica Bot", aiResponse, false);
         }
 
         sendBtn.addEventListener('click', handleSend);
         userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>
 </body>
-    </html>
-    
+</html>
