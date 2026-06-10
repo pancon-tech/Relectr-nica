@@ -92,14 +92,13 @@
             padding: 5px;
         }
 
-        /* Contenedor principal de pantallas */
         .main-content {
             flex: 1;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            margin-bottom: 65px; /* Espacio para la barra inferior */
+            margin-bottom: 65px;
         }
 
         .app-screen {
@@ -115,7 +114,6 @@
             display: flex;
         }
 
-        /* PANTALLA: CHAT */
         #chat-container {
             flex: 1;
             overflow-y: auto;
@@ -124,6 +122,10 @@
             gap: 15px;
             position: relative;
             padding: 10px 0;
+        }
+
+        #chat-screen {
+            position: relative;
         }
 
         #chat-screen::before {
@@ -283,7 +285,6 @@
             cursor: pointer;
         }
 
-        /* INTERFAZ GENERAL: TARJETAS (Biblioteca y Fallas) */
         .search-bar {
             width: 100%;
             background-color: var(--chat-bg);
@@ -357,7 +358,6 @@
             margin-bottom: 8px;
         }
 
-        /* BARRA DE NAVEGACIÓN INFERIOR */
         nav.nav-tabs {
             position: fixed;
             bottom: 0;
@@ -405,7 +405,7 @@
             <img src="logo.png" alt="Relectrónica Logo">
         </div>
         <div class="header-info">
-            <h1 id="header-title">Relectrónica</h1>
+            <h1 id="header-title">Relectrónica Bot</h1>
             <p><span class="status-dot"></span> Soporte Técnico Activo</p>
         </div>
         <button class="clear-btn" id="clear-btn" title="Borrar Historial">🗑️</button>
@@ -486,15 +486,15 @@
     </div>
 
     <nav class="nav-tabs">
-        <button class="nav-item active" onclick="switchScreen('chat-screen', this)">
+        <button id="btn-nav-chat" class="nav-item active" onclick="switchScreen('chat-screen', this)">
             <span class="nav-icon">💬</span>
             <span>Chat Técnico</span>
         </button>
-        <button class="nav-item" onclick="switchScreen('library-screen', this)">
+        <button id="btn-nav-library" class="nav-item" onclick="switchScreen('library-screen', this)">
             <span class="nav-icon">📘</span>
             <span>Biblioteca</span>
         </button>
-        <button class="nav-item" onclick="switchScreen('cases-screen', this)">
+        <button id="btn-nav-cases" class="nav-item" onclick="switchScreen('cases-screen', this)">
             <span class="nav-icon">🛠️</span>
             <span>Casos de Falla</span>
         </button>
@@ -517,15 +517,16 @@
         let selectedImageBase64 = null;
         let chatHistory = [];
 
-        // Cambiar entre pantallas dinámicamente
         function switchScreen(screenId, element) {
-            document.querySelectorAll('.app-screen').forEach(screen => screen.classList.remove('active'));
+            document.querySelectorAll('.app-screen').forEach(screen => screen.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             
-            document.getElementById(screenId).classList.add('active');
+            const targetedScreen = document.getElementById(screenId);
+            if (targetedScreen) {
+                targetedScreen.style.display = 'flex';
+            }
             element.classList.add('active');
 
-            // Cambiar dinámicamente comportamiento de elementos del header si es necesario
             if (screenId === 'chat-screen') {
                 headerTitle.innerText = "Relectrónica Bot";
                 clearBtn.style.display = "block";
@@ -538,14 +539,14 @@
             }
         }
 
-        // Expandir tarjetas de las nuevas secciones
         function toggleCard(card) {
             card.classList.toggle('expanded');
             const content = card.querySelector('.tech-card-content');
-            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            if (content) {
+                content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            }
         }
 
-        // Buscadores interactivos locales en tiempo real
         document.getElementById('library-search').addEventListener('input', function(e) {
             const query = e.target.value.toLowerCase();
             document.querySelectorAll('#library-screen .tech-card').forEach(card => {
@@ -562,4 +563,7 @@
             });
         });
 
-        // Inicializar Chat y LocalStorag
+        function appendMessageToDOM(sender, text, isError = false, imageSrc = null) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            msgDiv.classList.add(sender === 'bot' ? '
