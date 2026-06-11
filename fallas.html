@@ -12,13 +12,14 @@
             --primary-color: #7928ca;
             --border-color: #22344d;
             --card-bg: #162235;
+            --accent-color: #a855f7;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         body {
@@ -73,7 +74,7 @@
         .status-dot {
             width: 8px;
             height: 8px;
-            background-color: #a855f7;
+            background-color: var(--accent-color);
             border-radius: 50%;
             display: inline-block;
         }
@@ -94,7 +95,6 @@
             border-radius: 8px;
             margin-bottom: 20px;
             outline: none;
-            font-size: 0.95rem;
         }
 
         .search-bar:focus {
@@ -104,7 +104,7 @@
         .section-title {
             font-size: 1.2rem;
             margin-bottom: 15px;
-            color: #a855f7;
+            color: var(--accent-color);
             font-weight: 600;
         }
 
@@ -115,11 +115,6 @@
             padding: 15px;
             margin-bottom: 12px;
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .tech-card:hover {
-            transform: translateY(-2px);
         }
 
         .tech-card h3 {
@@ -134,11 +129,6 @@
             content: "▼";
             font-size: 0.75rem;
             color: #a0aec0;
-            transition: transform 0.2s;
-        }
-
-        .tech-card.expanded h3::after {
-            transform: rotate(180deg);
         }
 
         .tech-card-content {
@@ -182,9 +172,7 @@
             align-items: center;
             color: #a0aec0;
             text-decoration: none;
-            font-size: 0.75rem;
-            background: none;
-            border: none;
+            font-size: 0.72rem;
             flex: 1;
             height: 100%;
             justify-content: center;
@@ -192,12 +180,12 @@
         }
 
         .nav-item.active {
-            color: #a855f7;
+            color: var(--accent-color);
             font-weight: bold;
         }
 
         .nav-icon {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -249,11 +237,14 @@
             <span class="nav-icon">🛠️</span>
             <span>Casos de Falla</span>
         </a>
+        <a href="calculadoras.html" class="nav-item">
+            <span class="nav-icon">🧮</span>
+            <span>Calculadoras</span>
+        </a>
     </nav>
 
     <script>
         function toggleCard(card) {
-            card.classList.toggle('expanded');
             const content = card.querySelector('.tech-card-content');
             if (content) {
                 content.style.display = content.style.display === 'block' ? 'none' : 'block';
@@ -269,5 +260,4 @@
         });
     </script>
 </body>
-  </html>
-  
+</html>
