@@ -290,6 +290,21 @@
                 <h3>Ley de Ohm</h3>
             </div>
 
+            <div class="app-button" onclick="openCalc('modal-asoc')">
+                <div class="app-icon">🔗</div>
+                <h3>Serie / Paralelo</h3>
+            </div>
+
+            <div class="app-button" onclick="openCalc('modal-divisor')">
+                <div class="app-icon">📉</div>
+                <h3>Divisor Voltaje</h3>
+            </div>
+
+            <div class="app-button" onclick="openCalc('modal-cap')">
+                <div class="app-icon">🔋</div>
+                <h3>Condensadores</h3>
+            </div>
+
         </div>
     </div>
 
@@ -340,6 +355,51 @@
             </div>
             <button class="btn-calc" onclick="calcularOhm()">Calcular Parámetro</button>
             <div class="result-box" id="result-ohm">Resultado: --</div>
+        </div>
+    </div>
+
+    <div id="modal-asoc" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeCalc('modal-asoc')">×</button>
+            <h3>Asociación de Resistencias</h3>
+            <div class="input-group">
+                <label>Resistencia 1 (Ω):</label>
+                <input type="number" id="asoc-r1" placeholder="Valor R1">
+                <label>Resistencia 2 (Ω):</label>
+                <input type="number" id="asoc-r2" placeholder="Valor R2">
+            </div>
+            <button class="btn-calc" onclick="calcularAsociacion()">Calcular Totales</button>
+            <div class="result-box" id="result-asoc">Serie: -- <br>Paralelo: --</div>
+        </div>
+    </div>
+
+    <div id="modal-divisor" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeCalc('modal-divisor')">×</button>
+            <h3>Divisor de Voltaje</h3>
+            <div class="input-group">
+                <label>Voltaje de Entrada (Vin):</label>
+                <input type="number" id="div-vin" placeholder="Ej: 12">
+                <label>Resistencia de Arriba R1 (Ω):</label>
+                <input type="number" id="div-r1" placeholder="Ej: 10000">
+                <label>Resistencia de Abajo R2 (Ω):</label>
+                <input type="number" id="div-r2" placeholder="Ej: 3300">
+            </div>
+            <button class="btn-calc" onclick="calcularDivisor()">Calcular Vout</button>
+            <div class="result-box" id="result-divisor">Voltaje de Salida: --</div>
+        </div>
+    </div>
+
+    <div id="modal-cap" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeCalc('modal-cap')">×</button>
+            <h3>Código de Condensadores</h3>
+            <div class="input-group">
+                <label>Introduce el código numérico (Ej: 104, 222, 471):</label>
+                <input type="text" id="cap-code" placeholder="Código..." maxlength="4">
+            </div>
+            <button class="btn-calc" onclick="calcularCapacitancia()">Decodificar</button>
+            <div class="result-box" id="result-cap">Capacitancia: --</div>
         </div>
     </div>
 
@@ -427,7 +487,7 @@
                     banda3 = "Especial";
                 }
 
-                recBox.innerHTML = `💡 <b>Reemplazo convencional:</b> Si no encuentras la SMD, usa una resistencia de <b>${banda1}, ${banda2} y ${banda3}</b>.`;
+                recBox.innerHTML = `💡 <b>Reemplazo convencional:</b> Si no encuentras la SMD, usa una de <b>${banda1}, ${banda2} y ${banda3}</b>.`;
                 recBox.style.display = "block";
 
             } else {
@@ -461,25 +521,4 @@
 
             if (!isNaN(v) && !isNaN(i) && isNaN(r)) {
                 resBox.innerText = `Resistencia (R) = ${(v / i).toFixed(2)} Ω`;
-            } else if (!isNaN(v) && isNaN(i) && !isNaN(r)) {
-                resBox.innerText = `Corriente (I) = ${(v / r).toFixed(4)} A (${(v / r * 1000).toFixed(1)} mA)`;
-            } else if (isNaN(v) && !isNaN(i) && !isNaN(r)) {
-                resBox.innerText = `Voltaje (V) = ${(i * r).toFixed(2)} V`;
-            } else {
-                resBox.innerText = "Error: Rellena exactamente 2 campos.";
-            }
-        }
-
-        function formatearOhms(ohm) {
-            if (ohm >= 1000000) {
-                return (ohm / 1000000).toFixed(2) + " MΩ";
-            } else if (ohm >= 1000) {
-                return (ohm / 1000).toFixed(2) + " kΩ";
-            } else {
-                return ohm.toFixed(1) + " Ω";
-            }
-        }
-    </script>
-</body>
-    </html>
-                    
+            } else if (!isNaN(v) && isNaN(i) && !isNaN(r))
