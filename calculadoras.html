@@ -96,7 +96,6 @@
             transition: transform 0.2s, background-color 0.2s;
             text-align: center;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
         }
 
         .app-button:active {
@@ -114,14 +113,12 @@
             justify-content: center;
             border-radius: 14px;
             border: 1px solid var(--border-color);
-            pointer-events: none; /* Evita que el toque se quede atrapado en el icono */
         }
 
         .app-button h3 {
             font-size: 0.9rem;
             font-weight: 600;
             color: #e2e8f0;
-            pointer-events: none; /* Evita que el toque se quede atrapado en el texto */
         }
 
         /* DISEÑO DE VENTANAS EMERGENTES (MODALS) */
@@ -129,13 +126,13 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(5, 9, 15, 0.85);
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 9, 15, 0.9);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 999;
             padding: 20px;
         }
 
@@ -161,7 +158,6 @@
             cursor: pointer;
             font-weight: bold;
             line-height: 1;
-            padding: 5px;
         }
 
         .modal-content h3 {
@@ -276,32 +272,32 @@
 
         <div class="apps-grid">
             
-            <div class="app-button" data-target="modal-smd">
+            <div class="app-button" onclick="openCalc('modal-smd')">
                 <div class="app-icon">📟</div>
                 <h3>Lector SMD</h3>
             </div>
 
-            <div class="app-button" data-target="modal-colores">
+            <div class="app-button" onclick="openCalc('modal-colores')">
                 <div class="app-icon">🎨</div>
                 <h3>6 Franjas</h3>
             </div>
 
-            <div class="app-button" data-target="modal-ohm">
+            <div class="app-button" onclick="openCalc('modal-ohm')">
                 <div class="app-icon">⚡</div>
                 <h3>Ley de Ohm</h3>
             </div>
 
-            <div class="app-button" data-target="modal-asoc">
+            <div class="app-button" onclick="openCalc('modal-asoc')">
                 <div class="app-icon">🔗</div>
                 <h3>Serie / Paralelo</h3>
             </div>
 
-            <div class="app-button" data-target="modal-divisor">
+            <div class="app-button" onclick="openCalc('modal-divisor')">
                 <div class="app-icon">📉</div>
                 <h3>Divisor Voltaje</h3>
             </div>
 
-            <div class="app-button" data-target="modal-cap">
+            <div class="app-button" onclick="openCalc('modal-cap')">
                 <div class="app-icon">🔋</div>
                 <h3>Condensadores</h3>
             </div>
@@ -311,7 +307,7 @@
 
     <div id="modal-smd" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-modal" data-close="modal-smd">×</button>
+            <button class="close-modal" onclick="closeCalc('modal-smd')">×</button>
             <h3>Lector de Resistencias SMD</h3>
             <div class="input-group">
                 <label for="smd-code">Introduce el código (Ej: 103, 4R7):</label>
@@ -325,7 +321,7 @@
 
     <div id="modal-colores" class="modal-overlay">
         <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
-            <button class="close-modal" data-close="modal-colores">×</button>
+            <button class="close-modal" onclick="closeCalc('modal-colores')">×</button>
             <h3>Código de Colores (6 Franjas)</h3>
             <div class="input-group">
                 <label>Selecciona los colores en orden:</label>
@@ -343,7 +339,7 @@
 
     <div id="modal-ohm" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-modal" data-close="modal-ohm">×</button>
+            <button class="close-modal" onclick="closeCalc('modal-ohm')">×</button>
             <h3>Calculadora de Ley de Ohm</h3>
             <p style="font-size: 0.72rem; color:#a0aec0; margin-bottom: 10px;">Coloca 2 valores y deja vacío el que quieras calcular.</p>
             <div class="input-group">
@@ -361,7 +357,7 @@
 
     <div id="modal-asoc" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-modal" data-close="modal-asoc">×</button>
+            <button class="close-modal" onclick="closeCalc('modal-asoc')">×</button>
             <h3>Asociación de Resistencias</h3>
             <div class="input-group">
                 <label>Resistencia 1 (Ω):</label>
@@ -376,7 +372,7 @@
 
     <div id="modal-divisor" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-modal" data-close="modal-divisor">×</button>
+            <button class="close-modal" onclick="closeCalc('modal-divisor')">×</button>
             <h3>Divisor de Voltaje</h3>
             <div class="input-group">
                 <label>Voltaje de Entrada (Vin):</label>
@@ -393,7 +389,7 @@
 
     <div id="modal-cap" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-modal" data-close="modal-cap">×</button>
+            <button class="close-modal" onclick="closeCalc('modal-cap')">×</button>
             <h3>Código de Condensadores</h3>
             <div class="input-group">
                 <label>Introduce el código numérico (Ej: 104, 222):</label>
@@ -424,33 +420,22 @@
     </nav>
 
     <script>
-        // CAPTURA NATIVA DE CLICS SEGUROS EN DISPOSITIVOS MÓVILES
-        document.addEventListener("DOMContentLoaded", function() {
-            
-            // Asignar apertura de calculadoras
-            document.querySelectorAll(".app-button").forEach(button => {
-                button.addEventListener("click", function() {
-                    let targetId = this.getAttribute("data-target");
-                    let targetModal = document.getElementById(targetId);
-                    if (targetModal) {
-                        targetModal.style.display = "flex";
-                    }
-                });
-            });
+        // FUNCIONES DE CONTROL PRINCIPALES (SÚPER DIRECTAS)
+        function openCalc(id) {
+            var modal = document.getElementById(id);
+            if(modal) {
+                modal.style.display = 'flex';
+            }
+        }
 
-            // Asignar botones de cierre (X)
-            document.querySelectorAll(".close-modal").forEach(button => {
-                button.addEventListener("click", function() {
-                    let closeId = this.getAttribute("data-close");
-                    let targetModal = document.getElementById(closeId);
-                    if (targetModal) {
-                        targetModal.style.display = "none";
-                    }
-                });
-            });
-        });
+        function closeCalc(id) {
+            var modal = document.getElementById(id);
+            if(modal) {
+                modal.style.display = 'none';
+            }
+        }
 
-        // FUNCIONES LOGICAS DE LOS CÁLCULOS
+        // LÓGICA DE LOS CÁLCULOS
         function calcularSMD() {
             let code = document.getElementById('smd-code').value.trim();
             let resBox = document.getElementById('result-smd');
@@ -505,4 +490,15 @@
             let r = parseFloat(document.getElementById('ohm-r').value);
             let resBox = document.getElementById('result-ohm');
 
-    
+            if (!isNaN(v) && !isNaN(i) && isNaN(r)) { resBox.innerText = `Resistencia (R) = ${(v / i).toFixed(2)} Ω`; }
+            else if (!isNaN(v) && isNaN(i) && !isNaN(r)) { resBox.innerText = `Corriente (I) = ${(v / r).toFixed(4)} A (${(v / r * 1000).toFixed(1)} mA)`; }
+            else if (isNaN(v) && !isNaN(i) && !isNaN(r)) { resBox.innerText = `Voltaje (V) = ${(i * r).toFixed(2)} V`; }
+            else { resBox.innerText = "Error: Rellena exactamente 2 campos."; }
+        }
+
+        function calcularAsociacion() {
+            let r1 = parseFloat(document.getElementById('asoc-r1').value);
+            let r2 = parseFloat(document.getElementById('asoc-r2').value);
+            let resBox = document.getElementById('result-asoc');
+            if(isNaN(r1) || isNaN(r2)) { resBox.innerText = "Rellena ambos campos."; return; }
+ 
