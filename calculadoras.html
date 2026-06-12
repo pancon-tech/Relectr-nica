@@ -70,38 +70,109 @@
 
         .section-title {
             font-size: 1.2rem;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: #a855f7;
             font-weight: 600;
         }
 
-        /* DISEÑO DE TARJETAS DE CÁLCULO */
-        .calc-card {
+        /* DISEÑO DE MATRIZ DE BOTONES TIPO APP */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .app-button {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            text-align: center;
         }
 
-        .calc-card h3 {
-            font-size: 1rem;
-            margin-bottom: 12px;
+        .app-button:active {
+            transform: scale(0.95);
+            background-color: #1e2e47;
+        }
+
+        .app-icon {
+            font-size: 2.2rem;
+            background-color: var(--input-bg);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .app-button h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        /* DISEÑO DE VENTANAS EMERGENTES (MODALS) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 9, 15, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #a0aec0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
             color: #fff;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 6px;
+            padding-bottom: 8px;
+            padding-right: 25px;
         }
 
+        /* ENTRADAS Y FORMULARIOS */
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
+            margin-bottom: 15px;
         }
 
         label {
@@ -128,16 +199,11 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            transition: background 0.2s;
-        }
-
-        .btn-calc:hover {
-            opacity: 0.9;
         }
 
         .result-box {
@@ -151,15 +217,11 @@
             color: #e2e8f0;
         }
 
-        /* ESTILOS ESPECÍFICOS PARA LAS FRANJAS DE COLORES */
         .band-select {
             font-weight: bold;
         }
-        .band-select option {
-            background-color: var(--input-bg);
-            color: white;
-        }
 
+        /* NAVEGACIÓN INFERIOR */
         nav.nav-tabs {
             position: fixed;
             bottom: 0;
@@ -211,19 +273,44 @@
     <div class="main-content">
         <h2 class="section-title">Asistente de Laboratorio</h2>
 
-        <div class="calc-card">
-            <h3>1. Lector de Resistencias SMD</h3>
+        <div class="apps-grid">
+            
+            <div class="app-button" onclick="openCalc('modal-smd')">
+                <div class="app-icon">📟</div>
+                <h3>Lector SMD</h3>
+            </div>
+
+            <div class="app-button" onclick="openCalc('modal-colores')">
+                <div class="app-icon">🎨</div>
+                <h3>6 Franjas</h3>
+            </div>
+
+            <div class="app-button" onclick="openCalc('modal-ohm')">
+                <div class="app-icon">⚡</div>
+                <h3>Ley de Ohm</h3>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modal-smd" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeCalc('modal-smd')">×</button>
+            <h3>Lector de Resistencias SMD</h3>
             <div class="input-group">
-                <label for="smd-code">Introduce el código (Ej: 103, 4R7, 1002):</label>
+                <label for="smd-code">Introduce el código (Ej: 103, 4R7):</label>
                 <input type="text" id="smd-code" placeholder="Código SMD..." maxlength="5">
             </div>
             <button class="btn-calc" onclick="calcularSMD()">Decodificar</button>
             <div class="result-box" id="result-smd">Resultado: --</div>
             <div class="result-box" id="recomienda-smd" style="display:none; border-left-color: #3b82f6; margin-top: 8px; font-size: 0.85rem;"></div>
         </div>
+    </div>
 
-        <div class="calc-card">
-            <h3>2. Código de Colores (6 Franjas)</h3>
+    <div id="modal-colores" class="modal-overlay">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <button class="close-modal" onclick="closeCalc('modal-colores')">×</button>
+            <h3>Código de Colores (6 Franjas)</h3>
             <div class="input-group">
                 <label>Selecciona los colores en orden:</label>
                 <select id="band1" class="band-select"><option value="0">1ª Banda: Negro</option><option value="1">Marrón</option><option value="2">Rojo</option><option value="3">Naranja</option><option value="4">Amarillo</option><option value="5">Verde</option><option value="6">Azul</option><option value="7">Violeta</option><option value="8">Gris</option><option value="9">Blanco</option></select>
@@ -236,10 +323,13 @@
             <button class="btn-calc" onclick="calcularSeisFranjas()">Calcular Resistencia</button>
             <div class="result-box" id="result-6bands">Resultado: --</div>
         </div>
+    </div>
 
-        <div class="calc-card">
-            <h3>3. Calculadora de Ley de Ohm</h3>
-            <p style="font-size: 0.75rem; color:#a0aec0; margin-bottom: 10px;">Coloca 2 valores cualesquiera y deja el que deseas calcular en blanco.</p>
+    <div id="modal-ohm" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeCalc('modal-ohm')">×</button>
+            <h3>Calculadora de Ley de Ohm</h3>
+            <p style="font-size: 0.72rem; color:#a0aec0; margin-bottom: 10px;">Coloca 2 valores y deja vacío el que quieras calcular.</p>
             <div class="input-group">
                 <label>Voltaje (V):</label>
                 <input type="number" id="ohm-v" placeholder="Voltios (V)">
@@ -273,7 +363,16 @@
     </nav>
 
     <script>
-        // LÓGICA DE DECODIFICACIÓN SMD + RECOMENDACIÓN DE REEMPLAZO CON COLORES
+        // CONTROL DE VENTANAS FLOTANTES
+        function openCalc(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeCalc(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // CÁLCULO SMD CON RECOMENDACIÓN AUTOMÁTICA
         function calcularSMD() {
             let code = document.getElementById('smd-code').value.trim();
             let resBox = document.getElementById('result-smd');
@@ -287,7 +386,6 @@
 
             const colores = ["Negro", "Marrón", "Rojo", "Naranja", "Amarillo", "Verde", "Azul", "Violeta", "Gris", "Blanco"];
 
-            // CASO A: Códigos con "R" (valores bajos o decimales)
             if(code.includes('R') || code.includes('r')) {
                 let parsed = code.replace(',', '.').toUpperCase();
                 let valor = parsed.replace('R', '.');
@@ -295,15 +393,14 @@
                 if(valor.endsWith('.')) valor = valor + "0";
                 
                 resBox.innerText = `Valor: ${valor} Ω`;
-                recBox.innerHTML = `💡 <b>Reemplazo convencional:</b> Si no tienes la SMD, puedes usar una resistencia física de orificio pasante con un valor equivalente de <b>${valor} Ω</b>.`;
+                recBox.innerHTML = `💡 <b>Reemplazo:</b> Puedes usar una resistencia convencional de <b>${valor} Ω</b>.`;
                 recBox.style.display = "block";
                 return;
             }
 
-            // CASO B: Códigos estándar de 3 o 4 números
             if(/^\d+$/.test(code)) {
                 if(code.length < 3 || code.length > 4) {
-                    resBox.innerText = "Código inválido (Debe tener 3 o 4 dígitos)";
+                    resBox.innerText = "Código inválido (3 o 4 dígitos)";
                     recBox.style.display = "none";
                     return;
                 }
@@ -318,7 +415,6 @@
                 
                 resBox.innerText = `Valor: ${formatearOhms(ohm)}`;
 
-                // Conversión a código de colores convencional
                 let banda1 = colores[digito1];
                 let banda2 = colores[digito2];
                 let banda3; 
@@ -331,7 +427,7 @@
                     banda3 = "Especial";
                 }
 
-                recBox.innerHTML = `💡 <b>Reemplazo convencional:</b> Si no encuentras la SMD, usa una resistencia convencional de <b>${banda1}, ${banda2} y ${banda3}</b>.`;
+                recBox.innerHTML = `💡 <b>Reemplazo convencional:</b> Si no encuentras la SMD, usa una resistencia de <b>${banda1}, ${banda2} y ${banda3}</b>.`;
                 recBox.style.display = "block";
 
             } else {
@@ -340,7 +436,7 @@
             }
         }
 
-        // LÓGICA PARA FRANJAS DE COLORES (6 FRANJAS)
+        // CÁLCULO 6 FRANJAS
         function calcularSeisFranjas() {
             let b1 = document.getElementById('band1').value;
             let b2 = document.getElementById('band2').value;
@@ -356,7 +452,7 @@
                 `Valor: ${formatearOhms(ohm)} al ±${tol}% (${ppm} ppm/K)`;
         }
 
-        // LÓGICA LEY DE OHM
+        // LEY DE OHM
         function calcularOhm() {
             let v = parseFloat(document.getElementById('ohm-v').value);
             let i = parseFloat(document.getElementById('ohm-i').value);
@@ -374,7 +470,6 @@
             }
         }
 
-        // Función auxiliar para pasar de Ohms a KiloOhms o MegaOhms automáticamente
         function formatearOhms(ohm) {
             if (ohm >= 1000000) {
                 return (ohm / 1000000).toFixed(2) + " MΩ";
@@ -386,5 +481,5 @@
         }
     </script>
 </body>
-                                                           </html>
+    </html>
                     
