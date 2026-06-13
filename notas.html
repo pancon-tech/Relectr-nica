@@ -14,8 +14,8 @@
     </header>
 
     <div style="display: flex; gap: 10px; padding: 15px; background: #111c2c;">
-        <button onclick="exportarNotas()" class="btn-calc" style="background:#10b981; flex:1;">💾 Exportar Backup</button>
-        <button onclick="document.getElementById('importFile').click()" class="btn-calc" style="background:#64748b; flex:1;">📂 Importar Backup</button>
+        <button onclick="exportarNotas()" class="btn-calc" style="background:#10b981; flex:1;">💾 Exportar</button>
+        <button onclick="document.getElementById('importFile').click()" class="btn-calc" style="background:#64748b; flex:1;">📂 Importar</button>
         <input type="file" id="importFile" style="display:none" onchange="importarNotas(event)">
     </div>
 
@@ -23,12 +23,12 @@
         </div>
 
     <script>
-        // --- 1. LÓGICA DE TUS NOTAS ---
+        // --- 1. LÓGICA DE NOTAS (Mostrar y Eliminar) ---
         function mostrarNotas() {
             const contenedor = document.getElementById('notes-list-container');
             const notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
             
-            contenedor.innerHTML = "";
+            contenedor.innerHTML = ""; 
             notas.forEach(nota => {
                 const div = document.createElement('div');
                 div.className = 'tech-card';
@@ -82,7 +82,7 @@
             reader.readAsText(file);
         }
 
-        // Ejecutar al cargar la página
+        // Cargar notas al iniciar
         mostrarNotas();
     </script>
 </body>
