@@ -48,187 +48,150 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            border: 2px solid var(--primary-color);
         }
 
         .header-info h1 {
             font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            margin-bottom: 65px;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #a855f7;
-            font-weight: 600;
-        }
-
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .app-button {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            text-align: center;
-        }
-
-        .app-button:active {
-            transform: scale(0.95);
-            background-color: #1e2e47;
-        }
-
-        .app-icon {
-            font-size: 2.2rem;
-            background-color: var(--input-bg);
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            border: 1px solid var(--border-color);
-        }
-
-        .app-button h3 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: rgba(11, 19, 31, 0.98);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #a0aec0;
-            font-size: 1.5rem;
-            cursor: pointer;
             font-weight: bold;
         }
 
-        .modal-content h3 {
-            font-size: 1.1rem;
+        .header-info p {
+            font-size: 0.85rem;
+            color: #10b981;
+        }
+
+        .calc-container {
+            flex: 1;
+            padding: 20px;
+            padding-bottom: 90px;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .selector-calculadora {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .calculator-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .calculator-card h3 {
             margin-bottom: 15px;
-            color: #fff;
+            font-size: 1.1rem;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
-            padding-right: 25px;
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .grupo-input {
             margin-bottom: 15px;
         }
 
-        label {
-            font-size: 0.85rem;
+        .grupo-input label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
             color: #cbd5e1;
         }
 
-        input, select {
+        .calc-input {
             width: 100%;
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: white;
             padding: 10px;
             border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: #fff;
+            font-size: 1rem;
             outline: none;
-            font-size: 0.95rem;
         }
 
-        input:focus, select:focus {
+        .calc-input:focus {
             border-color: var(--primary-color);
         }
 
         .btn-calc {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
+            width: 100%;
             padding: 12px;
+            border: none;
             border-radius: 6px;
+            background-color: var(--primary-color);
+            color: #fff;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            width: 100%;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-calc:hover {
+            opacity: 0.9;
         }
 
         .result-box {
-            margin-top: 12px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
             background-color: var(--input-bg);
-            border-left: 4px solid #a855f7;
-            padding: 10px;
-            border-radius: 0 6px 6px 0;
+            border: 1px dashed var(--border-color);
+            min-height: 50px;
             font-size: 0.95rem;
-            font-weight: bold;
-            color: #e2e8f0;
         }
 
-        .band-select {
-            font-weight: bold;
+        .band-selector-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        nav.nav-tabs {
+        .select-banda {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            background-color: var(--input-bg);
+            color: #fff;
+            border: 1px solid var(--border-color);
+        }
+
+        .color-preview-bar {
+            display: flex;
+            height: 25px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .preview-segment {
+            flex: 1;
+            background-color: #334155;
+            transition: background-color 0.2s;
+        }
+
+        nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 60px;
             background-color: var(--chat-bg);
-            border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
-            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid var(--border-color);
             z-index: 100;
         }
 
@@ -236,22 +199,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #a0aec0;
             text-decoration: none;
+            color: #94a3b8;
             font-size: 0.75rem;
-            flex: 1;
-            height: 100%;
-            justify-content: center;
-            gap: 4px;
         }
 
         .nav-item.active {
-            color: #a855f7;
-            font-weight: bold;
+            color: #fff;
         }
 
         .nav-icon {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
+            margin-bottom: 2px;
         }
     </style>
 </head>
@@ -259,150 +218,211 @@
 
     <header>
         <div class="logo-container">
-            <img src="logo.png" alt="Relectrónica Logo">
+            <div style="font-size: 24px; font-weight: bold; color: var(--primary-color);">R</div>
         </div>
         <div class="header-info">
             <h1>Relectrónica</h1>
+            <p>● Línea Técnica Inteligente</p>
         </div>
     </header>
-        <div class="main-content">
-        <h2 class="section-title">Asistente de Laboratorio</h2>
-        <div class="apps-grid">
-            <div class="app-button" onclick="openCalc('modal-smd')"><div class="app-icon">📟</div><h3>Lector SMD</h3></div>
-            <div class="app-button" onclick="openCalc('modal-colores')"><div class="app-icon">🎨</div><h3>6 Franjas</h3></div>
-            <div class="app-button" onclick="openCalc('modal-ohm')"><div class="app-icon">⚡</div><h3>Ley de Ohm</h3></div>
-            <div class="app-button" onclick="openCalc('modal-asoc')"><div class="app-icon">🔗</div><h3>Serie / Paralelo</h3></div>
-            <div class="app-button" onclick="openCalc('modal-divisor')"><div class="app-icon">📉</div><h3>Divisor Voltaje</h3></div>
-            <div class="app-button" onclick="openCalc('modal-cap')"><div class="app-icon">🔋</div><h3>Condensadores</h3></div>
-            <div class="app-button" onclick="openCalc('modal-tcon')"><div class="app-icon">📺</div><h3>Voltajes T-CON</h3></div>
-        </div>
-    </div>
 
-    <div id="modal-smd" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeCalc('modal-smd')">×</button>
-            <h3>Lector de Resistencias SMD</h3>
-            <div class="input-group">
-                <label for="smd-code">Introduce el código:</label>
-                <input type="text" id="smd-code" placeholder="Código SMD..." maxlength="5">
-            </div>
-            <button class="btn-calc" onclick="calcularSMD()">Decodificar</button>
-            <div class="result-box" id="result-smd">Resultado: --</div>
-            <div class="result-box" id="recomienda-smd" style="display:none; border-left-color: #3b82f6; margin-top: 8px; font-size: 0.85rem;"></div>
-        </div>
-    </div>
-    
-    <div id="modal-colores" class="modal-overlay">
-        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
-            <button class="close-modal" onclick="closeCalc('modal-colores')">×</button>
-            <h3>Código de Colores (6 Franjas)</h3>
-            <div class="input-group">
-                <select id="band1" class="band-select"><option value="0">1ª Banda: Negro</option><option value="1">Marrón</option><option value="2">Rojo</option><option value="3">Naranja</option><option value="4">Amarillo</option><option value="5">Verde</option><option value="6">Azul</option><option value="7">Violeta</option><option value="8">Gris</option><option value="9">Blanco</option></select>
-                <select id="band2" class="band-select"><option value="0">2ª Banda: Negro</option><option value="1">Marrón</option><option value="2">Rojo</option><option value="3">Naranja</option><option value="4">Amarillo</option><option value="5">Verde</option><option value="6">Azul</option><option value="7">Violeta</option><option value="8">Gris</option><option value="9">Blanco</option></select>
-                <select id="band3" class="band-select"><option value="0">3ª Banda: Negro</option><option value="1">Marrón</option><option value="2">Rojo</option><option value="3">Naranja</option><option value="4">Amarillo</option><option value="5">Verde</option><option value="6">Azul</option><option value="7">Violeta</option><option value="8">Gris</option><option value="9">Blanco</option></select>
-                <select id="multiplier" class="band-select"><option value="1">Multiplicador: Negro (x1)</option><option value="10">Marrón (x10)</option><option value="100">Rojo (x100)</option><option value="1000">Naranja (x1k)</option><option value="10000">Amarillo (x10k)</option><option value="100000">Verde (x100k)</option><option value="1000000">Azul (x1M)</option><option value="0.1">Dorado (x0.1)</option><option value="0.01">Plateado (x0.01)</option></select>
-                <select id="tolerance" class="band-select"><option value="1">Tolerancia: Marrón (±1%)</option><option value="2">Rojo (±2%)</option><option value="0.5">Verde (±0.5%)</option><option value="0.25">Azul (±0.25%)</option><option value="0.1">Violeta (±0.1%)</option><option value="5">Dorado (±5%)</option><option value="10">Plateado (±10%)</option></select>
-                <select id="ppm" class="band-select"><option value="250">Negro (250 ppm)</option><option value="100">Marrón (100 ppm)</option><option value="50">Rojo (50 ppm)</option><option value="15">Naranja (15 ppm)</option><option value="25">Amarillo (25 ppm)</option><option value="20">Verde (20 ppm)</option><option value="10">Azul (10 ppm)</option></select>
-            </div>
-            <button class="btn-calc" onclick="calcularSeisFranjas()">Calcular Resistencia</button>
-            <div class="result-box" id="result-6bands">Resultado: --</div>
-        </div>
-    </div>
-        <div id="modal-ohm" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeCalc('modal-ohm')">×</button>
-            <h3>Calculadora de Ley de Ohm</h3>
-            <div class="input-group">
-                <label>Voltaje (V):</label><input type="number" id="ohm-v" placeholder="Voltios (V)">
-                <label>Corriente (I):</label><input type="number" id="ohm-i" placeholder="Amperios (A)">
-                <label>Resistencia (R):</label><input type="number" id="ohm-r" placeholder="Ohmios (Ω)">
-            </div>
-            <button class="btn-calc" onclick="calcularOhm()">Calcular Parámetro</button>
-            <div class="result-box" id="result-ohm">Resultado: --</div>
-        </div>
-    </div>
+    <div class="calc-container">
+        <select class="selector-calculadora" id="calc-menu-selector" onchange="alternarCalculadora(this.value)">
+            <option value="smd">🎛️ Lector de Resistencias SMD</option>
+            <option value="6bandas">🎨 Código de Colores (6 Bandas)</option>
+            <option value="ohm">⚡ Calculadora de Ley de Ohm</option>
+            <option value="series-paralelo">⛓️ Circuitos Serie y Paralelo</option>
+            <option value="divisor">📉 Divisor de Voltaje / Tensión</option>
+            <option value="voltajes" selected>🖥️ Diagnóstico Maestro de Paneles LCD / T-CON</option>
+        </select>
 
-    <div id="modal-asoc" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeCalc('modal-asoc')">×</button>
-            <h3>Asociación de Resistencias</h3>
-            <div class="input-group">
-                <label>Resistencia 1 (Ω):</label><input type="number" id="asoc-r1" placeholder="R1">
-                <label>Resistencia 2 (Ω):</label><input type="number" id="asoc-r2" placeholder="R2">
+        <div id="calc-smd" class="calculator-card" style="display:none;">
+            <h3>🎛️ Lector de Resistencias SMD</h3>
+            <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 12px;">Soporta códigos de 3 dígitos, 4 dígitos y EIA-96:</p>
+            <div class="grupo-input">
+                <label>Código impreso en el componente:</label>
+                <input type="text" id="smd-code-input" class="calc-input" placeholder="Ej: 103, 4702, 01A, R22" style="text-transform: uppercase;">
             </div>
-            <button class="btn-calc" onclick="calcularAsociacion()">Calcular Totales</button>
-            <div class="result-box" id="result-asoc">Serie: -- <br>Paralelo: --</div>
+            <button class="btn-calc" onclick="calcularResistenciaSMD()">Interpretar Código</button>
+            <div class="result-box" id="smd-res-box">El valor calculado aparecerá aquí...</div>
         </div>
-    </div>
 
-    <div id="modal-divisor" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeCalc('modal-divisor')">×</button>
-            <h3>Divisor de Voltaje</h3>
-            <div class="input-group">
-                <label>Vin:</label><input type="number" id="div-vin" placeholder="Ej: 12">
-                <label>R1 (Ω):</label><input type="number" id="div-r1" placeholder="Ej: 10000">
-                <label>R2 (Ω):</label><input type="number" id="div-r2" placeholder="Ej: 3300">
-            </div>
-            <button class="btn-calc" onclick="calcularDivisor()">Calcular Vout</button>
-            <div class="result-box" id="result-divisor">Voltaje de Salida: --</div>
-        </div>
-    </div>
-
-    <div id="modal-cap" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeCalc('modal-cap')">×</button>
-            <h3>Código de Condensadores</h3>
-            <div class="input-group">
-                <label>Introduce el código:</label>
-                <input type="text" id="cap-code" placeholder="Ej: 104, 222" maxlength="4">
-            </div>
-            <button class="btn-calc" onclick="calcularCapacitancia()">Decodificar</button>
-            <div class="result-box" id="result-cap">Capacitancia: --</div>
-        </div>
-    </div>
-
-    <div id="modal-tcon" class="modal-overlay">
-        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
-            <button class="close-modal" onclick="closeCalc('modal-tcon')">×</button>
-            <h3>Análisis de Voltajes T-CON</h3>
-            <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 15px; text-align: center;">
-                Coloca la punta negra a GND y mide los puntos clave. Deja en blanco si no mediste un punto.
-            </p>
+        <div id="calc-6bandas" class="calculator-card" style="display:none;">
+            <h3>🎨 Código de Colores (6 Bandas)</h3>
+            <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 12px;">Selecciona el color correspondiente para cada franja de la resistencia:</p>
             
-            <div class="input-group">
-                <label>VCC / VDD (Lógica básica):</label>
-                <input type="number" id="tcon-vcc" step="0.1" placeholder="Ej: 3.3">
+            <div class="color-preview-bar">
+                <div id="prev-b1" class="preview-segment"></div>
+                <div id="prev-b2" class="preview-segment"></div>
+                <div id="prev-b3" class="preview-segment"></div>
+                <div id="prev-b4" class="preview-segment"></div>
+                <div id="prev-b5" class="preview-segment"></div>
+                <div id="prev-b6" class="preview-segment"></div>
             </div>
 
-            <div class="input-group">
-                <label>VGH / VON (Encendido TFT):</label>
-                <input type="number" id="tcon-vgh" step="0.1" placeholder="Ej: 26">
+            <div class="band-selector-container">
+                <div class="grupo-input">
+                    <label>1ª Banda:</label>
+                    <select id="b1-select" class="select-banda" onchange="actualizarPrevisualizacionColores()"></select>
+                </div>
+                <div class="grupo-input">
+                    <label>2ª Banda:</label>
+                    <select id="b2-select" class="select-banda" onchange="actualizarPrevisualizacionColores()"></select>
+                </div>
+                <div class="grupo-input">
+                    <label>3ª Banda:</label>
+                    <select id="b3-select" class="select-banda" onchange="actualizarPrevisualizacionColores()"></select>
+                </div>
+                <div class="grupo-input">
+                    <label>Multiplicador:</label>
+                    <select id="b4-select" class="select-banda" onchange="actualizarPrevisualizacionColores()"></select>
+                </div>
+                <div class="grupo-input">
+                    <label>Tolerancia:</label>
+                    <select id="b5-select" class="select-banda" onchange="actualizarPrevisualizacionColores()"></select>
+                </div>
+                <div class="grupo-input">
+                    <label>Coef. Térmico:</label>
+                    <select id="b6-select" class="select-banda" onchange="actualizarPrevisualizacionColores()"></select>
+                </div>
+            </div>
+            <button class="btn-calc" onclick="calcularCodigoSeisBandas()">Calcular Resistencia</button>
+            <div class="result-box" id="6b-res-box">El valor e información térmica se reflejarán aquí...</div>
+                                        </div>
+                         <div id="calc-ohm" class="calculator-card" style="display:none;">
+            <h3>⚡ Calculadora de Ley de Ohm</h3>
+            <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 12px;">Introduce dos valores conocidos para calcular los campos vacíos de forma automática:</p>
+            <div class="grupo-input">
+                <label>Voltaje (V) en Voltios:</label>
+                <input type="number" step="any" id="ohm-v" class="calc-input" placeholder="Ej: 12">
+            </div>
+            <div class="grupo-input">
+                <label>Corriente (I) en Amperios o miliAmperios:</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="number" step="any" id="ohm-i" class="calc-input" placeholder="Ej: 0.5 o 500" style="flex:1;">
+                    <select id="unit-i" class="calc-input" style="width:85px; padding:5px;">
+                        <option value="A">A</option>
+                        <option value="mA">mA</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grupo-input">
+                <label>Resistencia (R) en Ohmios:</label>
+                <input type="number" step="any" id="ohm-r" class="calc-input" placeholder="Ej: 24">
+            </div>
+            <button class="btn-calc" onclick="calcularLeyOhm()">Calcular Parámetros</button>
+            <div class="result-box" id="ohm-res-box">Los datos calculados y la potencia disipada aparecerán aquí...</div>
+        </div>
+
+        <div id="calc-series-paralelo" class="calculator-card" style="display:none;">
+            <h3>⛓️ Circuitos Serie y Paralelo</h3>
+            <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 12px;">Introduce los valores separados por comas para calcular equivalencias:</p>
+            <div class="grupo-input">
+                <label>Valores de Componentes (Separados por comas):</label>
+                <input type="text" id="sp-values-input" class="calc-input" placeholder="Ej: 10, 22, 47, 100">
+            </div>
+            <div class="grupo-input">
+                <label>Tipo de Componente bajo análisis:</label>
+                <select id="sp-type-select" class="calc-input">
+                    <option value="resistencias">Resistencias o Resistores (Ω)</option>
+                    <option value="capacitores">Capacitores o Condensadores (µF)</option>
+                    <option value="inductores">Inductores o Bobinas (mH)</option>
+                </select>
+            </div>
+            <button class="btn-calc" onclick="calcularAsociaciones()">Calcular Equivalencias</button>
+            <div class="result-box" id="sp-res-box">Los resultados equivalentes para ambas configuraciones aparecerán aquí...</div>
+        </div>
+
+        <div id="calc-divisor" class="calculator-card" style="display:none;">
+            <h3>📉 Divisor de Voltaje / Tensión</h3>
+            <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 12px;">Calcula el voltaje de salida (Vout) generado en un nodo resistivo:</p>
+            <div class="grupo-input">
+                <label>Voltaje de Entrada (Vin) en Voltios:</label>
+                <input type="number" step="any" id="div-vin" class="calc-input" placeholder="Ej: 12">
+            </div>
+            <div class="grupo-input">
+                <label>Resistencia R1 (Superior) en Ohmios:</label>
+                <input type="number" step="any" id="div-r1" class="calc-input" placeholder="Ej: 10000">
+            </div>
+            <div class="grupo-input">
+                <label>Resistencia R2 (Conectada a GND) en Ohmios:</label>
+                <input type="number" step="any" id="div-r2" class="calc-input" placeholder="Ej: 5000">
+            </div>
+            <button class="btn-calc" onclick="calcularDivisorVoltaje()">Calcular Voltaje de Salida</button>
+            <div class="result-box" id="div-res-box">El voltaje remanente calculado en el nodo central aparecerá aquí...</div>
+        </div>
+                <div id="calc-voltajes" class="calculator-card" style="display:block;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                <h3 style="margin: 0; color: #a855f7;">🖥️ Diagnóstico Maestro de Paneles LCD / T-CON</h3>
+                <span style="font-size: 0.75rem; background: rgba(168, 85, 247, 0.2); color: #c084fc; padding: 2px 8px; border-radius: 20px; font-weight: bold;">v2.0 PRO</span>
+            </div>
+            
+            <div class="grupo-input" style="margin-bottom: 15px;">
+                <label style="color: #a78bfa; font-weight: bold;">🔍 1. Selecciona el Síntoma Visual en la Pantalla:</label>
+                <select id="sintoma-visual" class="calc-input" onchange="analizarSintomaVisual()" style="width:100%; padding:10px; border-radius:8px; background:var(--input-bg); color:white; border:1px solid var(--border-color); margin-top:5px;">
+                    <option value="">-- Selecciona un síntoma para recibir guía de banco --</option>
+                    <option value="blanca">Pantalla completamente Blanca o Gris (Sin Video)</option>
+                    <option value="lenta">Imagen en cámara lenta (Slow Motion) o congelada</option>
+                    <option value="lavada">Imagen Lavada, sin contraste o fondo blanco con líneas de colores</option>
+                    <option value="negativo">Colores distorsionados / Imagen en Negativo (Falla Solarizada)</option>
+                    <option value="intermitente">Parpadeo de imagen, saltos verticales o doble imagen</option>
+                    <option value="oscura">Pantalla se desvanece a negro lentamente tras encender</option>
+                </select>
+                <div id="guia-sintoma-box" style="margin-top: 8px; padding: 10px; background: rgba(37, 99, 235, 0.1); border-left: 4px solid #2563eb; border-radius: 4px; font-size: 0.85rem; color: #cbd5e1; display: none;"></div>
             </div>
 
-            <div class="input-group">
-                <label>VGL / VOFF (Apagado TFT):</label>
-                <input type="number" id="tcon-vgl" step="0.1" placeholder="Ej: -7">
+            <label style="color: #a78bfa; font-weight: bold; display: block; margin-bottom: 8px;">📊 2. Registro de Voltajes Críticos (DC-DC):</label>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                <div class="grupo-input">
+                    <label style="font-size:0.8rem;">VCC / VDD (Lógica ~ 3.3V):</label>
+                    <input type="number" step="0.01" id="vcc-input" class="calc-input" placeholder="Ej: 3.3" style="width:100%;">
+                </div>
+                <div class="grupo-input">
+                    <label style="font-size:0.8rem;">AVDD (Analógico ~ 15V):</label>
+                    <input type="number" step="0.01" id="avdd-input" class="calc-input" placeholder="Ej: 15.4" style="width:100%;">
+                </div>
+                <div class="grupo-input">
+                    <label style="font-size:0.8rem;">VCOM (Común ~ 6V):</label>
+                    <input type="number" step="0.01" id="vcom-input" class="calc-input" placeholder="Ej: 6.2" style="width:100%;">
+                </div>
+                <div class="grupo-input">
+                    <label style="font-size:0.8rem;">VGH / VON (TFT ON ~ 25V-32V):</label>
+                    <input type="number" step="0.01" id="vgh-input" class="calc-input" placeholder="Ej: 28.1" style="width:100%;">
+                </div>
+                <div class="grupo-input" style="grid-column: span 2;">
+                    <label style="font-size:0.8rem;">VGL / VOFF (TFT OFF ~ -5V a -12V):</label>
+                    <input type="number" step="0.01" id="vgl-input" class="calc-input" placeholder="Ej: -7.5" style="width:100%;">
+                </div>
             </div>
 
-            <div class="input-group">
-                <label>AVDD (Alimentación Analógica):</label>
-                <input type="number" id="tcon-avdd" step="0.1" placeholder="Ej: 15">
+            <div style="border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); margin-bottom: 15px;">
+                <label style="color: #a78bfa; font-weight: bold; display: block; margin-bottom: 5px;">🎨 3. Análisis de Corrección Gamma (IC Gamma):</label>
+                <p style="font-size:0.75rem; color:#a0aec0; margin-bottom:8px;">Introduce 3 puntos secuenciales de la escala Gamma para verificar la curva descendente:</p>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                    <input type="number" step="0.1" id="vg-alto" class="calc-input" placeholder="Alto (14.5)" style="font-size:0.8rem; padding:8px;">
+                    <input type="number" step="0.1" id="vg-medio" class="calc-input" placeholder="Medio (9.2)" style="font-size:0.8rem; padding:8px;">
+                    <input type="number" step="0.1" id="vg-bajo" class="calc-input" placeholder="Bajo (3.1)" style="font-size:0.8rem; padding:8px;">
+                </div>
             </div>
 
-            <div class="input-group">
-                <label>VCOM (Voltaje Común):</label>
-                <input type="number" id="tcon-vcom" step="0.1" placeholder="Ej: 6">
+            <div style="border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); margin-bottom: 15px;">
+                <label style="color: #a78bfa; font-weight: bold; display: block; margin-bottom: 5px;">⚡ 4. Banco de Señales de Reloj (Líneas CKV):</label>
+                <p style="font-size:0.75rem; color:#a0aec0; margin-bottom:8px;">Mide en ohmios la impedancia entre las líneas CKV y Tierra (GND) para detectar cortos:</p>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="linea-ckv" class="calc-input" style="flex:1; padding:8px; border-radius:6px; background:var(--input-bg); color:white; border:1px solid var(--border-color); font-size:0.85rem;">
+                        <option value="correcta">Impedancia Alta o MegaOhmios (Correcto)</option>
+                        <option value="corto_tierra">Corto Directo a Tierra o Baja Impedancia (&lt; 500 Ω)</option>
+                        <option value="corto_entre_si">Corto entre CKV1 y CKV2 u otras líneas de reloj</option>
+                    </select>
+                </div>
             </div>
 
-            <button class="btn-calc" onclick="analizarVoltajesTCON()">Diagnosticar Falla</button>
-            <div class="result-box" id="result-tcon" style="text-align: left; font-size: 0.85rem; line-height: 1.4; max-height: 180px; overflow-y: auto; font-weight: normal;">
-                Resultado del análisis técnico aquí...
-            </div>
+            <button class="btn-calc" onclick="ejecutarDiagnosticoMaestroPanel()" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); font-weight: bold;">🚀 Analizar Todo y Generar Reporte Técnico</button>
+            <div class="result-box" id="panel-res-box" style="margin-top:15px; font-size:0.9rem; line-height:1.5; border-left: 4px solid #a855f7;">Los resultados del análisis maestro se reflejarán aquí...</div>
         </div>
     </div>
 
-        <nav class="nav-tabs">
+    <nav>
         <a href="index.html" class="nav-item">
             <span class="nav-icon">💬</span>
             <span>Chat Técnico</span>
@@ -429,156 +449,125 @@
         </a>
     </nav>
 
-        <script>
-        function openCalc(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeCalc(id) { document.getElementById(id).style.display = 'none'; }
-
-        function calcularSMD() {
-            let code = document.getElementById('smd-code').value.trim();
-            let resBox = document.getElementById('result-smd');
-            let recBox = document.getElementById('recomienda-smd');
-            if(code === "") { resBox.innerText = "Introduce un código"; recBox.style.display = "none"; return; }
-            const col = ["Negro", "Marrón", "Rojo", "Naranja", "Amarillo", "Verde", "Azul", "Violeta", "Gris", "Blanco"];
-            if(code.includes('R') || code.includes('r')) {
-                let valor = code.toUpperCase().replace('R', '.');
-                if(valor.startsWith('.')) valor = "0" + valor;
-                resBox.innerText = `Valor: ${valor} Ω`;
-                recBox.innerHTML = `💡 <b>Reemplazo:</b> Usa una convencional de <b>${valor} Ω</b>.`;
-                recBox.style.display = "block"; return;
-            }
-            if(/^\d+$/.test(code)) {
-                let d1 = parseInt(code.charAt(0)), d2 = parseInt(code.charAt(1)), m = parseInt(code.substring(code.length - 1));
-                let base = parseInt(code.substring(0, code.length - 1));
-                let ohm = base * Math.pow(10, m);
-                resBox.innerText = `Valor: ${formatearOhms(ohm)}`;
-                let b3 = (code.length === 4) ? col[m + 1] : col[m];
-                recBox.innerHTML = `💡 <b>Reemplazo:</b> Convencional de <b>${col[d1]}, ${col[d2]} y ${b3}</b>.`;
-                recBox.style.display = "block";
-            } else { resBox.innerText = "Código inválido"; recBox.style.display = "none"; }
+    <script>
+        function alternarCalculadora(idSeleccionada) {
+            const IDs = ['calc-smd', 'calc-6bandas', 'calc-ohm', 'calc-series-paralelo', 'calc-divisor', 'calc-voltajes'];
+            IDs.forEach(id => {
+                document.getElementById(id).style.display = (id === 'calc-' + idSeleccionada) ? 'block' : 'none';
+            });
         }
+                function calcularResistenciaSMD() {
+            const code = document.getElementById('smd-code-input').value.trim().toUpperCase();
+            const resBox = document.getElementById('smd-res-box');
+            if (!code) { resBox.innerHTML = "Introduce un código válido."; return; }
 
-        function calcularSeisFranjas() {
-            let b1 = document.getElementById('band1').value, b2 = document.getElementById('band2').value, b3 = document.getElementById('band3').value;
-            let mult = parseFloat(document.getElementById('multiplier').value), tol = document.getElementById('tolerance').value, ppm = document.getElementById('ppm').value;
-            let ohm = parseInt(b1 + b2 + b3) * mult;
-            document.getElementById('result-6bands').innerText = `Valor: ${formatearOhms(ohm)} al ±${tol}% (${ppm} ppm/K)`;
-        }
-
-        function calcularOhm() {
-            let v = parseFloat(document.getElementById('ohm-v').value), i = parseFloat(document.getElementById('ohm-i').value), r = parseFloat(document.getElementById('ohm-r').value);
-            let resBox = document.getElementById('result-ohm');
-            if (!isNaN(v) && !isNaN(i) && isNaN(r)) resBox.innerText = `Resistencia (R) = ${(v / i).toFixed(2)} Ω`;
-            else if (!isNaN(v) && isNaN(i) && !isNaN(r)) resBox.innerText = `Corriente (I) = ${(v / r).toFixed(4)} A (${(v / r * 1000).toFixed(1)} mA)`;
-            else if (isNaN(v) && !isNaN(i) && !isNaN(r)) resBox.innerText = `Voltaje (V) = ${(i * r).toFixed(2)} V`;
-            else resBox.innerText = "Error: Rellena 2 campos.";
-        }
-
-        function calcularAsociacion() {
-            let r1 = parseFloat(document.getElementById('asoc-r1').value), r2 = parseFloat(document.getElementById('asoc-r2').value);
-            let resBox = document.getElementById('result-asoc');
-            if(isNaN(r1) || isNaN(r2)) { resBox.innerText = "Rellena ambos campos."; return; }
-            resBox.innerHTML = `Serie: ${formatearOhms(r1 + r2)} <br>Paralelo: ${formatearOhms((r1 * r2) / (r1 + r2))}`;
-        }
-
-        function calcularDivisor() {
-            let vin = parseFloat(document.getElementById('div-vin').value), r1 = parseFloat(document.getElementById('div-r1').value), r2 = parseFloat(document.getElementById('div-r2').value);
-            let resBox = document.getElementById('result-divisor');
-            if(isNaN(vin) || isNaN(r1) || isNaN(r2)) { resBox.innerText = "Faltan parámetros."; return; }
-            resBox.innerText = `Voltaje de Salida (Vout) = ${(vin * (r2 / (r1 + r2))).toFixed(2)} V`;
-        }
-
-        function calcularCapacitancia() {
-            let code = document.getElementById('cap-code').value.trim();
-            let resBox = document.getElementById('result-cap');
-            if(code === "" || !/^\d+$/.test(code) || code.length < 3) { resBox.innerText = "Código inválido."; return; }
-            let pf = parseInt(code.substring(0, 2)) * Math.pow(10, parseInt(code.substring(2, 3)));
-            resBox.innerHTML = `${(pf / 1000).toFixed(2)} nF <br>${(pf / 1000000).toFixed(4)} µF <br>${pf.toLocaleString()} pF`;
-        }
-
-        function analizarVoltajesTCON() {
-            const vccInput = document.getElementById('tcon-vcc').value;
-            const vghInput = document.getElementById('tcon-vgh').value;
-            const vglInput = document.getElementById('tcon-vgl').value;
-            const avddInput = document.getElementById('tcon-avdd').value;
-            const vcomInput = document.getElementById('tcon-vcom').value;
-            const resBox = document.getElementById('result-tcon');
-
-            let diagnosticoHTML = "";
-            let conteoCampos = 0;
-
-            if (vccInput !== "") {
-                conteoCampos++;
-                const vcc = parseFloat(vccInput);
-                if (vcc <= 0) {
-                    diagnosticoHTML += `<span style="color:#ef4444; font-weight:bold;">❌ VCC (${vcc}V):</span> Fusible de T-CON abierto o corto total en el integrado conversor. Pantalla muerta.<br><br>`;
-                } else if ((vcc >= 1.6 && vcc <= 2.0) || (vcc >= 3.0 && vcc <= 3.6)) {
-                    diagnosticoHTML += `<span style="color:#10b981; font-weight:bold;">✅ VCC (${vcc}V):</span> Correcto. La lógica digital de control está activa.<br><br>`;
-                } else {
-                    diagnosticoHTML += `<span style="color:#f59e0b; font-weight:bold;">⚠️ VCC (${vcc}V):</span> Alterado. Debería medir cerca de 3.3V o 1.8V. Revisa capacitores de filtrado.<br><br>`;
-                }
-            }
-
-            if (vghInput !== "") {
-                conteoCampos++;
-                const vgh = parseFloat(vghInput);
-                if (vgh <= 0) {
-                    diagnosticoHTML += `<span style="color:#ef4444; font-weight:bold;">❌ VGH (${vgh}V):</span> Ausente o negativo. Falla en circuito elevador o capacitores SMD en corto. Pantalla negra con backlight encendido o video desvanecido.<br><br>`;
-                } else if (vgh >= 20 && vgh <= 33) {
-                    diagnosticoHTML += `<span style="color:#10b981; font-weight:bold;">✅ VGH (${vgh}V):</span> Correcto. Voltaje de activación estable de compuertas TFT.<br><br>`;
-                } else {
-                    diagnosticoHTML += `<span style="color:#ef4444; font-weight:bold;">❌ VGH (${vgh}V):</span> ¡Voltaje peligroso! Si supera los 35V corres riesgo de quemar los chips COF del cristal.<br><br>`;
-                }
-            }
-
-            if (vglInput !== "") {
-                conteoCampos++;
-                const rgl = parseFloat(vglInput);
-                if (rgl >= 0) {
-                    diagnosticoHTML += `<span style="color:#ef4444; font-weight:bold;">❌ VGL (${rgl}V):</span> ¡Error crítico! Debe ser NEGATIVO. Al ser positivo los transistores del cristal no cierran. Causa pantalla blanca, líneas de retraso o imagen congelada.<br><br>`;
-                } else if (rgl <= -4 && rgl >= -11) {
-                    diagnosticoHTML += `<span style="color:#10b981; font-weight:bold;">✅ VGL (${rgl}V):</span> Correcto. Voltaje negativo de apagado estable de compuertas.<br><br>`;
-                } else {
-                    diagnosticoHTML += `<span style="color:#f59e0b; font-weight:bold;">⚠️ VGL (${rgl}V):</span> Inestable o bajo. Puede causar pérdida de contraste o fantasmas en la imagen.<br><br>`;
-                }
-            }
-
-            if (avddInput !== "") {
-                conteoCampos++;
-                const avdd = parseFloat(avddInput);
-                if (avdd <= 5) {
-                    diagnosticoHTML += `<span style="color:#ef4444; font-weight:bold;">❌ AVDD (${avdd}V):</span> Caído o ausente. Corto en la línea analógica (diodos o capacitores de la fuente). Pantalla gris plana o sin contraste.<br><br>`;
-                } else if (avdd >= 12.5 && avdd <= 17.5) {
-                    diagnosticoHTML += `<span style="color:#10b981; font-weight:bold;">✅ AVDD (${avdd}V):</span> Correcto. Energía para circuitos Gamma y escaladores correcta.<br><br>`;
-                } else {
-                    diagnosticoHTML += `<span style="color:#f59e0b; font-weight:bold;">⚠️ AVDD (${avdd}V):</span> Fuera del rango estándar de operación.<br><br>`;
-                }
-            }
-
-            if (vcomInput !== "") {
-                conteoCampos++;
-                const vcom = parseFloat(vcomInput);
-                if (vcom <= 0) {
-                    diagnosticoHTML += `<span style="color:#ef4444; font-weight:bold;">❌ VCOM (${vcom}V):</span> Ausente. Ocasiona pantalla blanca completa o inversión severa de colores (efecto negativo).<br><br>`;
-                } else if (vcom >= 4.5 && vcom <= 8) {
-                    diagnosticoHTML += `<span style="color:#10b981; font-weight:bold;">✅ VCOM (${vcom}V):</span> Correcto. Voltaje de referencia común del panel equilibrado.<br><br>`;
-                } else {
-                    diagnosticoHTML += `<span style="color:#f59e0b; font-weight:bold;">⚠️ VCOM (${vcom}V):</span> Descalibrado. Causará un parpadeo molesto en el brillo general (flicker).<br><br>`;
-                }
-            }
-
-            if (conteoCampos === 0) {
-                resBox.innerHTML = "Introduce la medición de al menos un punto de prueba.";
+            if (/^\d{3,4}$/.test(code)) {
+                const len = code.length;
+                const valBase = parseInt(code.substring(0, len - 1));
+                const mult = parseInt(code.charAt(len - 1));
+                const ohms = valBase * Math.pow(10, mult);
+                resBox.innerHTML = `<b>Resistencia:</b> ${formatearOhms(ohms)}<br><small>Código estándar de ${len} dígitos.</small>`;
                 return;
             }
 
-            resBox.innerHTML = diagnosticoHTML;
+            if (code.includes('R')) {
+                const ohms = parseFloat(code.replace('R', '.'));
+                if (!isNaN(ohms)) {
+                    resBox.innerHTML = `<b>Resistencia:</b> ${ohms} Ω<br><small>Código con punto decimal flotante (R).</small>`;
+                    return;
+                }
+            }
+
+            const eia96Codes = {
+                "01":100,"02":102,"03":105,"04":107,"05":110,"06":113,"07":115,"08":118,"09":121,
+                "10":124,"11":127,"12":130,"13":133,"14":137,"15":140,"16":143,"17":147,"18":150,
+                "47":301,"48":309,"49":316,"50":324,"51":332,"70":523,"80":665,"90":845
+            };
+            const eia96Mult = {"A":1, "B":10, "C":100, "D":1000, "E":10000, "F":100000, "X":0.1, "Y":0.01, "Z":0.001};
+
+            if (code.length === 3 && /^\d{2}[A-Z]$/.test(code)) {
+                const numPart = code.substring(0, 2);
+                const letPart = code.charAt(2);
+                if (eia96Codes[numPart] && eia96Mult[letPart]) {
+                    const ohms = eia96Codes[numPart] * eia96Mult[letPart];
+                    resBox.innerHTML = `<b>Resistencia:</b> ${formatearOhms(ohms)} (Tolerancia: ±1%)<br><small>Interpretado bajo la norma de precisión EIA-96.</small>`;
+                    return;
+                }
+            }
+            resBox.innerHTML = "⚠️ Código no reconocido o formato inválido. Revisa las letras o caracteres.";
         }
 
-        function formatearOhms(ohm) {
-            if (ohm >= 1000000) return (ohm / 1000000).toFixed(2) + " MΩ";
-            if (ohm >= 1000) return (ohm / 1000).toFixed(2) + " kΩ";
-            return ohm.toFixed(1) + " Ω";
+        const listadoColores6B = [
+            { nombre: "Negro", color: "#000000", txt: "#fff", val: 0, m: 1, t: null, tc: 250 },
+            { nombre: "Marrón", color: "#8B4513", txt: "#fff", val: 1, m: 10, t: 1, tc: 100 },
+            { nombre: "Rojo", color: "#FF0000", txt: "#fff", val: 2, m: 100, t: 2, tc: 50 },
+            { nombre: "Naranja", color: "#FFA500", txt: "#000", val: 3, m: 1000, t: null, tc: 15 },
+            { nombre: "Amarillo", color: "#FFFF00", txt: "#000", val: 4, m: 10000, t: null, tc: 25 },
+            { nombre: "Verde", color: "#008000", txt: "#fff", val: 5, m: 100000, t: 0.5, tc: 20 },
+            { nombre: "Azul", color: "#0000FF", txt: "#fff", val: 6, m: 1000000, t: 0.25, tc: 10 },
+            { nombre: "Violeta", color: "#EE82EE", txt: "#000", val: 7, m: 10000000, t: 0.1, tc: 5 },
+            { nombre: "Gris", color: "#808080", txt: "#fff", val: 8, m: null, t: 0.05, tc: 1 },
+            { nombre: "Blanco", color: "#FFFFFF", txt: "#000", val: 9, m: null, t: null, tc: null },
+            { nombre: "Oro", color: "#D4AF37", txt: "#000", val: null, m: 0.1, t: 5, tc: null },
+            { nombre: "Plata", color: "#C0C0C0", txt: "#000", val: null, m: 0.01, t: 10, tc: null }
+        ];
+
+        function inicializarSelectoresColores() {
+            const selects = ['b1-select', 'b2-select', 'b3-select', 'b4-select', 'b5-select', 'b6-select'];
+            selects.forEach((id, idx) => {
+                const elem = document.getElementById(id);
+                listadoColores6B.forEach((c, index) => {
+                    if (idx < 3 && c.val === null) return;
+                    if (idx === 3 && c.m === null) return;
+                    if (idx === 4 && c.t === null) return;
+                    if (idx === 5 && c.tc === null) return;
+
+                    const opt = document.createElement('option');
+                    opt.value = index;
+                    opt.innerText = c.nombre;
+                    elem.appendChild(opt);
+                });
+            });
+            actualizarPrevisualizacionColores();
         }
+
+        function actualizarPrevisualizacionColores() {
+            const s1 = listadoColores6B[document.getElementById('b1-select').value];
+            const s2 = listadoColores6B[document.getElementById('b2-select').value];
+            const s3 = listadoColores6B[document.getElementById('b3-select').value];
+            const s4 = listadoColores6B[document.getElementById('b4-select').value];
+            const s5 = listadoColores6B[document.getElementById('b5-select').value];
+            const s6 = listadoColores6B[document.getElementById('b6-select').value];
+
+            document.getElementById('prev-b1').style.backgroundColor = s1.color;
+            document.getElementById('prev-b2').style.backgroundColor = s2.color;
+            document.getElementById('prev-b3').style.backgroundColor = s3.color;
+            document.getElementById('prev-b4').style.backgroundColor = s4.color;
+            document.getElementById('prev-b5').style.backgroundColor = s5.color;
+            document.getElementById('prev-b6').style.backgroundColor = s6.color;
+        }
+
+        function calcularCodigoSeisBandas() {
+            const s1 = listadoColores6B[document.getElementById('b1-select').value];
+            const s2 = listadoColores6B[document.getElementById('b2-select').value];
+            const s3 = listadoColores6B[document.getElementById('b3-select').value];
+            const s4 = listadoColores6B[document.getElementById('b4-select').value];
+            const s5 = listadoColores6B[document.getElementById('b5-select').value];
+            const s6 = listadoColores6B[document.getElementById('b6-select').value];
+
+            const baseVal = (s1.val * 100) + (s2.val * 10) + s3.val;
+            const ohms = baseVal * s4.m;
+
+            document.getElementById('6b-res-box').innerHTML = `
+                <b>Resistencia:</b> ${formatearOhms(ohms)}<br>
+                <b>Tolerancia:</b> ±${s5.t}%<br>
+                <b>Coeficiente de Temperatura:</b> ${s6.tc} ppm/K
+            `;
+        }
+
+        window.onload = function() {
+            inicializarSelectoresColores();
+        };
     </script>
 </body>
 </html>
