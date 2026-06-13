@@ -15,16 +15,50 @@
             --input-bg: #080d16;
             --success-color: #10b981;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; }
-        header { background-color: var(--chat-bg); padding: 15px; display: flex; align-items: center; border-bottom: 1px solid var(--border-color); gap: 15px; }
-        .input-section { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        input, textarea { background: var(--input-bg); border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 8px; }
-        button { background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        
-        /* Contenedor de Backup (añadido discretamente) */
-        .backup-container { display: flex; gap: 10px; padding: 0 15px 15px 15px; }
-        .backup-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 0.9rem; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--chat-bg);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            gap: 15px;
+        }
+
+        .logo-container {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .input-container { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        input, textarea { background: var(--input-bg); border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 5px; }
+        button { background: var(--primary-color); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        #notes-list-container { padding: 15px; }
+        .tech-card { background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid var(--primary-color); }
     </style>
 </head>
 <body>
@@ -34,24 +68,23 @@
         <h1>Mis Notas de Taller</h1>
     </header>
 
-    <div class="input-section">
+    <div class="input-container">
         <input type="text" id="titulo" placeholder="Título de la nota...">
-        <textarea id="contenido" placeholder="Contenido de la nota..." rows="3"></textarea>
-        <button onclick="guardarNota()">Guardar Nota</button>
+        <textarea id="contenido" placeholder="Descripción de la falla o solución..." rows="3"></textarea>
+        <button onclick="guardarNota()">Guardar Solución</button>
     </div>
 
-    <div class="backup-container">
-        <button class="backup-btn" style="background:#10b981;" onclick="exportarNotas()">💾 Exportar</button>
-        <button class="backup-btn" style="background:#64748b;" onclick="document.getElementById('importFile').click()">📂 Importar</button>
-        <input type="file" id="importFile" style="display:none" onchange="importarNotas(event)">
-    </div>
-
-    <input type="text" id="buscador" placeholder="Buscar notas..." oninput="filtrarNotas()" style="margin: 0 15px 15px 15px;">
+    <input type="text" id="buscador" placeholder="Buscar en notas..." oninput="filtrarNotas()" style="margin: 0 15px;">
 
     <div id="notes-list-container"></div>
 
+    <div style="display: flex; gap: 10px; padding: 15px; margin-top: auto;">
+        <button onclick="exportarNotas()" style="background:#10b981; flex:1;">Exportar</button>
+        <button onclick="document.getElementById('importFile').click()" style="background:#64748b; flex:1;">Importar</button>
+        <input type="file" id="importFile" style="display:none" onchange="importarNotas(event)">
+    </div>
+
     <script>
-        // --- TU LÓGICA ORIGINAL ---
         function guardarNota() {
             const titulo = document.getElementById('titulo').value;
             const contenido = document.getElementById('contenido').value;
@@ -68,28 +101,34 @@
             const contenedor = document.getElementById('notes-list-container');
             const notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
             contenedor.innerHTML = "";
-            notas.forEach(n => {
-                contenedor.innerHTML += `<div class="tech-card" style="margin:15px; padding:15px; background:var(--card-bg); border-radius:8px;">
-                    <h3>${n.titulo}</h3><p>${n.contenido}</p>
-                    <button style="background:#ef4444; margin-top:10px;" onclick="eliminarNota(${n.id})">Eliminar</button>
-                </div>`;
+            notas.forEach(nota => {
+                const div = document.createElement('div');
+                div.className = 'tech-card';
+                div.innerHTML = `<h3>${nota.titulo}</h3><p>${nota.contenido}</p><button onclick="eliminarNota(${nota.id})" style="background:#ef4444; margin-top:10px;">Eliminar</button>`;
+                contenedor.appendChild(div);
+            });
+        }
+
+        function filtrarNotas() {
+            const busqueda = document.getElementById('buscador').value.toLowerCase();
+            document.querySelectorAll('.tech-card').forEach(tarjeta => {
+                tarjeta.style.display = tarjeta.innerText.toLowerCase().includes(busqueda) ? "block" : "none";
             });
         }
 
         function eliminarNota(id) {
-            let notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
-            notas = notas.filter(n => n.id !== id);
-            localStorage.setItem('relectronica_notas', JSON.stringify(notas));
-            mostrarNotas();
+            if (confirm("¿Estás seguro de que quieres borrar esta solución de tu bitácora?")) {
+                let notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
+                notas = notas.filter(nota => nota.id !== id);
+                localStorage.setItem('relectronica_notas', JSON.stringify(notas));
+                mostrarNotas();
+            }
         }
 
-        function filtrarNotas() {
-            // ... lógica original de filtrado ...
-        }
-
-        // --- FUNCIONES DE BACKUP (AÑADIDAS AL FINAL) ---
+        // --- FUNCIONES DE BACKUP ---
         function exportarNotas() {
             const data = localStorage.getItem('relectronica_notas');
+            if(!data) return alert("No hay notas para exportar.");
             const blob = new Blob([data], {type: 'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
@@ -102,7 +141,7 @@
             reader.onload = (ev) => {
                 localStorage.setItem('relectronica_notas', ev.target.result);
                 mostrarNotas();
-                alert("Backup importado");
+                alert("Notas importadas correctamente.");
             };
             reader.readAsText(e.target.files[0]);
         }
