@@ -9,7 +9,9 @@
 <body>
 
     <header>
-        </header>
+        <div class="logo-container">R</div>
+        <h1>Mis Notas de Taller</h1>
+    </header>
 
     <div style="display: flex; gap: 10px; padding: 15px; background: #111c2c;">
         <button onclick="exportarNotas()" class="btn-calc" style="background:#10b981; flex:1;">💾 Exportar Backup</button>
@@ -21,9 +23,12 @@
         </div>
 
     <script>
-        // ... (Aquí van todas tus funciones de notas: mostrarNotas, eliminarNota, etc.)
+        // --- TUS FUNCIONES DE NOTAS ---
+        function mostrarNotas() {
+            // Asegúrate de que esta función exista según tu código original
+        }
 
-        // EXPORTAR: Crea un archivo .json con tus notas
+        // --- FUNCIONES DE BACKUP ---
         function exportarNotas() {
             const notas = localStorage.getItem('relectronica_notas');
             if (!notas) {
@@ -38,18 +43,16 @@
             a.click();
         }
 
-        // IMPORTAR: Lee un archivo .json y actualiza tus notas
         function importarNotas(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const notas = JSON.parse(e.target.result);
                     localStorage.setItem('relectronica_notas', JSON.stringify(notas));
-                    location.reload(); // Recarga para ver los cambios
                     alert("¡Backup importado con éxito!");
+                    location.reload(); 
                 } catch (err) {
                     alert("Error al importar: el archivo no es válido.");
                 }
