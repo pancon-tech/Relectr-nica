@@ -14,8 +14,8 @@
     </header>
 
     <div style="display: flex; gap: 10px; padding: 15px; background: #111c2c;">
-        <button onclick="exportarNotas()" class="btn-calc" style="background:#10b981; flex:1;">💾 Exportar</button>
-        <button onclick="document.getElementById('importFile').click()" class="btn-calc" style="background:#64748b; flex:1;">📂 Importar</button>
+        <button onclick="exportarNotas()" class="btn-calc" style="background:#10b981; flex:1;">💾 Exportar Backup</button>
+        <button onclick="document.getElementById('importFile').click()" class="btn-calc" style="background:#64748b; flex:1;">📂 Importar Backup</button>
         <input type="file" id="importFile" style="display:none" onchange="importarNotas(event)">
     </div>
 
@@ -23,13 +23,12 @@
         </div>
 
     <script>
-        // --- FUNCIÓN PRINCIPAL DE CARGA ---
+        // --- 1. LÓGICA DE TUS NOTAS ---
         function mostrarNotas() {
             const contenedor = document.getElementById('notes-list-container');
             const notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
             
-            contenedor.innerHTML = ""; // Limpiar antes de pintar
-            
+            contenedor.innerHTML = "";
             notas.forEach(nota => {
                 const div = document.createElement('div');
                 div.className = 'tech-card';
@@ -42,7 +41,16 @@
             });
         }
 
-        // --- FUNCIONES DE BACKUP ---
+        function eliminarNota(id) {
+            if (confirm("¿Estás seguro de que quieres borrar esta nota?")) {
+                let notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
+                notas = notas.filter(nota => nota.id !== id);
+                localStorage.setItem('relectronica_notas', JSON.stringify(notas));
+                mostrarNotas();
+            }
+        }
+
+        // --- 2. LÓGICA DE BACKUP ---
         function exportarNotas() {
             const notas = localStorage.getItem('relectronica_notas');
             if (!notas) {
@@ -74,17 +82,7 @@
             reader.readAsText(file);
         }
 
-        // --- FUNCIÓN ELIMINAR ---
-        function eliminarNota(id) {
-            if (confirm("¿Estás seguro de que quieres borrar esta nota?")) {
-                let notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
-                notas = notas.filter(nota => nota.id !== id);
-                localStorage.setItem('relectronica_notas', JSON.stringify(notas));
-                mostrarNotas();
-            }
-        }
-
-        // Cargar notas al iniciar
+        // Ejecutar al cargar la página
         mostrarNotas();
     </script>
 </body>
