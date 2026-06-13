@@ -85,7 +85,6 @@
             gap: 15px;
         }
 
-        /* DISEÑO INTEGRADO ESTILO APARTADO DE NOTAS */
         .formulario-taller {
             background-color: var(--chat-bg);
             border: 1px solid var(--border-color);
@@ -166,7 +165,6 @@
             transition: opacity 0.2s;
         }
 
-        /* PANEL DE RESULTADO EN PANTALLA */
         .resultado-container {
             display: none;
             background-color: var(--chat-bg);
@@ -213,20 +211,50 @@
             color: #a0aec0;
         }
 
-        /* SECCIÓN DEL HISTORIAL RECIENTE */
+        /* SECCIÓN DEL HISTORIAL AVANZADO */
         .seccion-historial {
-            margin-top: 10px;
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+
+        .header-historial-acciones {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
         }
 
         .titulo-historial {
             font-size: 1rem;
             font-weight: 600;
             color: #a855f7;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 6px;
+        }
+
+        .btn-borrar-todo {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .buscador-historial {
+            background-color: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            width: 100%;
+        }
+
+        .buscador-historial:focus {
+            border-color: var(--primary-color);
         }
 
         .lista-ordenes {
@@ -235,15 +263,20 @@
             gap: 10px;
         }
 
+        /* COLORES DEL SEMÁFORO SEGÚN EL ESTATUS */
         .item-orden-guardada {
-            background-color: var(--chat-bg);
-            border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 8px;
+            border-left: 5px solid #cbd5e1; /* Por defecto */
         }
+        
+        .status-diagnostico { background-color: #16243d; border: 1px solid #2563eb; border-left: 5px solid #2563eb; }
+        .status-repuesto { background-color: #2c2017; border: 1px solid #d97706; border-left: 5px solid #d97706; }
+        .status-reparado { background-color: #122820; border: 1px solid #16a34a; border-left: 5px solid #16a34a; }
+        .status-sin-solucion { background-color: #2d191e; border: 1px solid #dc2626; border-left: 5px solid #dc2626; }
 
         .item-orden-header {
             display: flex;
@@ -260,20 +293,47 @@
             line-height: 1.4;
         }
 
+        .badge-estatus-dinamico {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        .bg-diag { background: #2563eb; }
+        .bg-rep { background: #d97706; }
+        .bg-repado { background: #16a34a; }
+        .bg-sinsol { background: #dc2626; }
+
+        .bloque-botones-item {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
         .btn-recopiar {
-            background-color: var(--bot-msg-bg);
+            flex: 2;
+            background-color: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
-            color: #a855f7;
+            color: #ffffff;
             padding: 6px;
             border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            text-align: center;
         }
 
-        /* NAVEGACIÓN INFERIOR DE 6 BOTONES */
+        .select-cambiar-status {
+            flex: 1;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: #a0aec0;
+            font-size: 0.75rem;
+            padding: 4px;
+            border-radius: 6px;
+            outline: none;
+        }
+
         nav.nav-tabs {
             position: fixed;
             bottom: 0;
@@ -327,6 +387,13 @@
         <div class="formulario-taller">
             
             <div class="grupo-campo">
+                <label>Número de Servicio / Ticket:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="input-ticket" placeholder="Ej: 0241, 1050 (O déjalo vacío para auto-generar)">
+                </div>
+            </div>
+
+            <div class="grupo-campo">
                 <label>Fabricante (Marca):</label>
                 <div class="input-wrapper">
                     <input type="text" id="input-fabricante" placeholder="Ej: Samsung, LG, Sony...">
@@ -353,7 +420,7 @@
             <div class="grupo-campo">
                 <label>Diagnóstico Inicial / Síntoma de la Falla:</label>
                 <div class="input-wrapper">
-                    <textarea id="input-falla" rows="2" placeholder="Ej: Pantalla negra, parpadea LED de standby, falla de backlighting..."></textarea>
+                    <textarea id="input-falla" rows="2" placeholder="Ej: Falla de backlighting, reinicios continuos, no sintoniza..."></textarea>
                     <button class="btn-input-mic" onclick="escucharCampo('input-falla')">🎙️</button>
                 </div>
             </div>
@@ -379,9 +446,14 @@
         </div>
 
         <div class="seccion-historial">
-            <h2 class="titulo-historial">Órdenes Guardadas en la App</h2>
-            <div class="lista-ordenes" id="lista-ordenes-container">
-                </div>
+            <div class="header-historial-acciones">
+                <h2 class="titulo-historial">Órdenes Guardadas</h2>
+                <button class="btn-borrar-todo" onclick="limpiarTodoElHistorial()">🗑️ Vaciar Historial</button>
+            </div>
+            
+            <input type="text" id="buscador" class="buscador-historial" placeholder="🔍 Buscar por Marca, Modelo o N° de Orden..." oninput="filtrarHistorial()">
+            
+            <div class="lista-ordenes" id="lista-ordenes-container"></div>
         </div>
     </div>
 
@@ -410,13 +482,12 @@
             <span class="nav-icon">📋</span>
             <span>Recepción</span>
         </a>
-  </nav>
-      <script>
+                </nav>
+        <script>
         let reconocimientoVoz = null;
         let campoActivoId = null;
         let estaEscuchando = false;
 
-        // Cargar historial de órdenes al iniciar la pantalla
         window.addEventListener('DOMContentLoaded', () => {
             inicializarReconocimientoVoz();
             renderizarHistorial();
@@ -426,12 +497,12 @@
         function inicializarReconocimientoVoz() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                console.log("El navegador no soporta SpeechRecognition de forma nativa.");
+                console.log("El navegador no soporta SpeechRecognition.");
                 return;
             }
 
             reconocimientoVoz = new SpeechRecognition();
-            reconocimientoVoz.lang = 'es-VE'; // Configurado para modismos de Venezuela
+            reconocimientoVoz.lang = 'es-VE';
             reconocimientoVoz.continuous = false;
             reconocimientoVoz.interimResults = false;
 
@@ -446,21 +517,14 @@
                 }
             };
 
-            reconocimientoVoz.onerror = (event) => {
-                console.error("Error de voz:", event.error);
-                forzarApagadoMic();
-            };
-
-            reconocimientoVoz.onend = () => {
-                forzarApagadoMic();
-            };
+            reconocimientoVoz.onerror = () => forzarApagadoMic();
+            reconocimientoVoz.onend = () => forzarApagadoMic();
 
             reconocimientoVoz.onresult = function(event) {
                 const textoEscuchado = event.results[0][0].transcript;
                 if (textoEscuchado.trim() !== "" && campoActivoId) {
                     const el = document.getElementById(campoActivoId);
                     if(el) {
-                        // Si ya tiene texto, le concatena el dictado nuevo con un espacio
                         el.value = el.value ? el.value + " " + textoEscuchado : textoEscuchado;
                     }
                 }
@@ -469,15 +533,13 @@
 
         function escucharCampo(idCampo) {
             if (!reconocimientoVoz) {
-                alert("Tu dispositivo o navegador no soporta el reconocimiento de voz.");
+                alert("Tu dispositivo no soporta reconocimiento de voz.");
                 return;
             }
-
             if (estaEscuchando) {
                 reconocimientoVoz.stop();
-                if (campoActivoId === idCampo) return; // Si es el mismo, solo lo detiene
+                if (campoActivoId === idCampo) return;
             }
-
             campoActivoId = idCampo;
             reconocimientoVoz.start();
         }
@@ -491,8 +553,9 @@
             campoActivoId = null;
         }
 
-        // PROCESAR FORMULARIO Y GENERAR FICHA EN PANTALLA
+        // PROCESAR FORMULARIO Y GENERAR REPORTES
         function procesarNuevaOrden() {
+            const ticketManual = document.getElementById('input-ticket').value.trim();
             const fabricante = document.getElementById('input-fabricante').value.trim();
             const modelo = document.getElementById('input-modelo').value.trim();
             const serial = document.getElementById('input-serial').value.trim();
@@ -500,17 +563,17 @@
             const estatus = document.getElementById('input-estatus').value;
 
             if (!fabricante || !modelo) {
-                alert("Por favor, ingresa al menos la Marca y el Modelo del equipo para registrarlo.");
+                alert("Por favor, ingresa al menos la Marca y el Modelo del equipo.");
                 return;
             }
 
             const fechaVal = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const prefijoOrden = 'RE-' + Math.floor(1000 + Math.random() * 9000);
+            // Usa el número ingresado o genera un prefijo automático aleatorio si se dejó vacío
+            const prefijoOrden = ticketManual ? ticketManual : 'RE-' + Math.floor(1000 + Math.random() * 9000);
 
-            // Plantilla de Texto limpio estructurado para WhatsApp
             const txtWhatsApp = `📋 RELECTRÓNICA - ORDEN DE SERVICIO\n` +
                                 `---------------------------------\n` +
-                                `Orden N°: ${prefijoOrden}\n` +
+                                `Orden/Servicio N°: ${prefijoOrden}\n` +
                                 `Fecha: ${fechaVal}\n` +
                                 `Fabricante: ${fabricante}\n` +
                                 `Modelo: ${modelo}\n` +
@@ -519,36 +582,33 @@
                                 `Estatus: ${estatus}\n` +
                                 `---------------------------------`;
 
-            // Renderizar la ficha visual estilo "Ficha de Taller"
             const contenedorFicha = document.getElementById('ficha-render');
             contenedorFicha.innerHTML = `
                 <div class="ficha-titulo">RECEPCIÓN DE EQUIPO</div>
                 <div class="ficha-header">
-                    <span>ORDEN: <strong>#${prefijoOrden}</strong></span>
+                    <span>N° SERVICIO: <strong>#${prefijoOrden}</strong></span>
                     <span>FECHA: ${fechaVal}</span>
                 </div>
                 <div class="ficha-campo"><strong>Fabricante:</strong> ${fabricante}</div>
-                <div class="ficha-campo"><strong>Modelo del Dispositivo:</strong> ${modelo}</div>
-                <div class="ficha-campo"><strong>Número de Serie (S/N):</strong> ${serial || 'N/A'}</div>
-                <div class="ficha-campo"><strong>Diagnóstico Inicial:</strong> ${falla || 'Por revisar'}</div>
-                <div class="ficha-campo"><strong>Estatus del Servicio:</strong> <span class="badge-estatus">${estatus}</span></div>
+                <div class="ficha-campo"><strong>Modelo:</strong> ${modelo}</div>
+                <div class="ficha-campo"><strong>S/N:</strong> ${serial || 'N/A'}</div>
+                <div class="ficha-campo"><strong>Falla:</strong> ${falla || 'Por revisar'}</div>
+                <div class="ficha-campo"><strong>Estatus:</strong> <span class="badge-estatus-dinamico ${obtenerClaseBadge(estatus)}">${estatus}</span></div>
             `;
 
             document.getElementById('resultado-container').style.display = 'block';
 
-            // Configurar el botón de copiar
             const btnCopiar = document.getElementById('btn-copiar');
-            // Clonamos el botón para remover cualquier evento previo y evitar copias duplicadas
             const nuevoBtnCopiar = btnCopiar.cloneNode(true);
             btnCopiar.parentNode.replaceChild(nuevoBtnCopiar, btnCopiar);
 
             nuevoBtnCopiar.addEventListener('click', () => {
                 navigator.clipboard.writeText(txtWhatsApp).then(() => {
-                    // Guardar en el historial de la App al copiar con éxito
                     guardarEnHistorial({ prefijoOrden, fechaVal, fabricante, modelo, serial, falla, estatus, txtWhatsApp });
-                    alert("¡Ficha copiada al portapapeles! Guardada automáticamente en el historial.");
+                    alert("¡Ficha copiada al portapapeles y guardada en el historial!");
                     
-                    // Limpiar el formulario para un nuevo ingreso
+                    // Limpieza automática para el siguiente registro
+                    document.getElementById('input-ticket').value = '';
                     document.getElementById('input-fabricante').value = '';
                     document.getElementById('input-modelo').value = '';
                     document.getElementById('input-serial').value = '';
@@ -560,12 +620,27 @@
             nuevoBtnCopiar.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // SISTEMA DE ALMACENAMIENTO LOCAL (HISTORIAL)
+        // CONTROL CLASES SEMÁFORO
+        function obtenerClaseTarjeta(estatus) {
+            if (estatus === "En Diagnóstico") return "status-diagnostico";
+            if (estatus === "Esperando Repuesto") return "status-repuesto";
+            if (estatus === "Reparado") return "status-reparado";
+            if (estatus === "Sin Solución") return "status-sin-solucion";
+            return "";
+        }
+
+        function obtenerClaseBadge(estatus) {
+            if (estatus === "En Diagnóstico") return "bg-diag";
+            if (estatus === "Esperando Repuesto") return "bg-rep";
+            if (estatus === "Reparado") return "bg-repado";
+            if (estatus === "Sin Solución") return "bg-sinsol";
+            return "";
+        }
+
+        // MOTOR DE HISTORIAL LOCAL STORAGE
         function guardarEnHistorial(orden) {
             let historial = localStorage.getItem('relectronica_ordenes_historial');
             historial = historial ? JSON.parse(historial) : [];
-            
-            // Añadir al principio de la lista para ver siempre las más nuevas primero
             historial.unshift(orden);
             localStorage.setItem('relectronica_ordenes_historial', JSON.stringify(historial));
             renderizarHistorial();
@@ -577,7 +652,7 @@
             container.innerHTML = '';
 
             if (!historial || JSON.parse(historial).length === 0) {
-                container.innerHTML = `<p style="font-size: 0.85rem; color: #a0aec0; text-align: center; padding: 10px;">No hay órdenes guardadas recientemente.</p>`;
+                container.innerHTML = `<p style="font-size: 0.85rem; color: #a0aec0; text-align: center; padding: 10px;">No hay órdenes registradas.</p>`;
                 return;
             }
 
@@ -585,21 +660,45 @@
 
             listaOrdenes.forEach((orden, index) => {
                 const item = document.createElement('div');
-                item.classList.add('item-orden-guardada');
+                item.classList.add('item-orden-guardada', obtenerClaseTarjeta(orden.estatus));
                 item.innerHTML = `
                     <div class="item-orden-header">
-                        <span>Orden: <strong>#${orden.prefijoOrden}</strong></span>
+                        <span>N° Servicio: <strong>#${orden.prefijoOrden}</strong></span>
                         <span>${orden.fechaVal}</span>
                     </div>
                     <div class="item-orden-detalles">
                         <strong>${orden.fabricante} ${orden.modelo}</strong><br>
-                        <span style="font-size: 0.8rem; color: #a0aec0;">Falla: ${orden.falla || 'Por revisar'}</span><br>
-                        <span style="font-size: 0.8rem; color: #a855f7;">Estatus: ${orden.estatus}</span>
+                        <span style="font-size: 0.8rem; opacity: 0.85;">S/N: ${orden.serial || 'N/A'}</span><br>
+                        <span style="font-size: 0.8rem; opacity: 0.85;">Falla: ${orden.falla || 'Por revisar'}</span><br>
+                        <span style="margin-top: 4px; display: inline-block;" class="badge-estatus-dinamico ${obtenerClaseBadge(orden.estatus)}">${orden.estatus}</span>
                     </div>
-                    <button class="btn-recopiar" onclick="copiarHistorialDirecto(${index})">📋 Volver a Copiar Reporte</button>
+                    <div class="bloque-botones-item">
+                        <button class="btn-recopiar" onclick="copiarHistorialDirecto(${index})">📋 Copiar</button>
+                        <select class="select-cambiar-status" onchange="actualizarEstatusOrden(${index}, this.value)">
+                            <option value="" disabled selected>⚡ Estado</option>
+                            <option value="En Diagnóstico">En Diagnóstico</option>
+                            <option value="Esperando Repuesto">Esperando Repuesto</option>
+                            <option value="Reparado">Reparado</option>
+                            <option value="Sin Solución">Sin Solución</option>
+                        </select>
+                    </div>
                 `;
                 container.appendChild(item);
             });
+        }
+
+        // REGENERAR Y COPIAR TEXTO WHATSAPP DESDE EL HISTORIAL
+        function actualizarTextoWhatsApp(orden) {
+            return `📋 RELECTRÓNICA - ORDEN DE SERVICIO\n` +
+                   `---------------------------------\n` +
+                   `Orden/Servicio N°: ${orden.prefijoOrden}\n` +
+                   `Fecha: ${orden.fechaVal}\n` +
+                   `Fabricante: ${orden.fabricante}\n` +
+                   `Modelo: ${orden.modelo}\n` +
+                   `S/N: ${orden.serial || 'No especificado'}\n` +
+                   `Falla: ${orden.falla || 'Por revisar en banco'}\n` +
+                   `Estatus: ${orden.estatus}\n` +
+                   `---------------------------------`;
         }
 
         function copiarHistorialDirecto(index) {
@@ -607,11 +706,49 @@
             if (historial) {
                 const listaOrdenes = JSON.parse(historial);
                 const orden = listaOrdenes[index];
-                if (orden && orden.txtWhatsApp) {
+                if (orden) {
                     navigator.clipboard.writeText(orden.txtWhatsApp).then(() => {
-                        alert(`¡Reporte de la Orden #${orden.prefijoOrden} vuelto a copiar con éxito!`);
+                        alert(`¡Reporte de Servicio #${orden.prefijoOrden} copiado!`);
                     });
                 }
+            }
+        }
+
+        // RE-ESTABLECER ESTATUS DIRECTAMENTE DESDE LA TARJETA
+        function actualizarEstatusOrden(index, nuevoEstatus) {
+            let historial = localStorage.getItem('relectronica_ordenes_historial');
+            if (historial) {
+                let listaOrdenes = JSON.parse(historial);
+                if (listaOrdenes[index]) {
+                    listaOrdenes[index].estatus = nuevoEstatus;
+                    listaOrdenes[index].txtWhatsApp = actualizarTextoWhatsApp(listaOrdenes[index]);
+                    localStorage.setItem('relectronica_ordenes_historial', JSON.stringify(listaOrdenes));
+                    renderizarHistorial();
+                    alert(`El estatus de la orden #${listaOrdenes[index].prefijoOrden} cambió a: ${nuevoEstatus}`);
+                }
+            }
+        }
+
+        // FILTRO DINÁMICO (BUSCADOR EN TIEMPO REAL)
+        function filtrarHistorial() {
+            const termino = document.getElementById('buscador').value.toLowerCase().trim();
+            const tarjetas = document.querySelectorAll('.item-orden-guardada');
+
+            tarjetas.forEach(tarjeta => {
+                const textoTarjeta = tarjeta.innerText.toLowerCase();
+                if (textoTarjeta.includes(termino)) {
+                    tarjeta.style.display = 'flex';
+                } else {
+                    tarjeta.style.display = 'none';
+                }
+            });
+        }
+
+        // LIMPIEZA DE MEMORIA
+        function limpiarTodoElHistorial() {
+            if (confirm("¿Estás seguro de que quieres vaciar todo el registro de órdenes? Esta acción no se puede deshacer.")) {
+                localStorage.removeItem('relectronica_ordenes_historial');
+                renderizarHistorial();
             }
         }
     </script>
