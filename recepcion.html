@@ -1,1 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relectrónica - Registro de Recepción</title>
+    <style>
+        :root {
+            --bg-color: #0b131f;
+            --chat-bg: #111c2c;
+            --text-color: #ffffff;
+            --primary-color: #7928ca;
+            --bot-msg-bg: #1a273a;
+            --border-color: #22344d;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--chat-bg);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            gap: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .logo-container {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-info h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .header-info p {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            margin-top: 80px;
+            margin-bottom: 75px;
+            max-width: 600px;
+            width: 100%;
+            align-self: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* DISEÑO INTEGRADO ESTILO APARTADO DE NOTAS */
+        .formulario-taller {
+            background-color: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .grupo-campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .grupo-campo label {
+            font-size: 0.85rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+
+        .input-wrapper input, .input-wrapper select, .input-wrapper textarea {
+            flex: 1;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .input-wrapper input:focus, .input-wrapper select:focus, .input-wrapper textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-input-mic {
+            background-color: var(--bot-msg-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 42px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-activo {
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+            animation: pulso 1.5s infinite;
+        }
+
+        @keyframes pulso {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-principal {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        /* PANEL DE RESULTADO EN PANTALLA */
+        .resultado-container {
+            display: none;
+            background-color: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .ficha-orden {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            color: #f8fafc;
+        }
+
+        .ficha-titulo {
+            color: #a855f7;
+            font-weight: bold;
+            font-size: 1.05rem;
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .ficha-header {
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+        .ficha-campo {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .ficha-campo strong {
+            color: #a0aec0;
+        }
+
+        /* SECCIÓN DEL HISTORIAL RECIENTE */
+        .seccion-historial {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .titulo-historial {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #a855f7;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+        }
+
+        .lista-ordenes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .item-orden-guardada {
+            background-color: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-orden-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 4px;
+        }
+
+        .item-orden-detalles {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+
+        .btn-recopiar {
+            background-color: var(--bot-msg-bg);
+            border: 1px solid var(--border-color);
+            color: #a855f7;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* NAVEGACIÓN INFERIOR DE 6 BOTONES */
+        nav.nav-tabs {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: var(--chat-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 0.75rem;
+            flex: 1;
+            height: 100%;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: #a855f7;
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="logo.png" alt="Relectrónica Logo">
+        </div>
+        <div class="header-info">
+            <h1>Relectrónica</h1>
+            <p>Recepción & Fichas Técnicas</p>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="formulario-taller">
+            
+            <div class="grupo-campo">
+                <label>Fabricante (Marca):</label>
+                <div class="input-wrapper">
+                    <input type="text" id="input-fabricante" placeholder="Ej: Samsung, LG, Sony...">
+                    <button class="btn-input-mic" onclick="escucharCampo('input-fabricante')">🎙️</button>
+                </div>
+            </div>
+
+            <div class="grupo-campo">
+                <label>Modelo del Dispositivo:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="input-modelo" placeholder="Ej: UN55TU7000GXZS...">
+                    <button class="btn-input-mic" onclick="escucharCampo('input-modelo')">🎙️</button>
+                </div>
+            </div>
+
+            <div class="grupo-campo">
+                <label>Número de Serie (S/N):</label>
+                <div class="input-wrapper">
+                    <input type="text" id="input-serial" placeholder="Ej: L93N3X0HA00231...">
+                    <button class="btn-input-mic" onclick="escucharCampo('input-serial')">🎙️</button>
+                </div>
+            </div>
+
+            <div class="grupo-campo">
+                <label>Diagnóstico Inicial / Síntoma de la Falla:</label>
+                <div class="input-wrapper">
+                    <textarea id="input-falla" rows="2" placeholder="Ej: Pantalla negra, parpadea LED de standby, falla de backlighting..."></textarea>
+                    <button class="btn-input-mic" onclick="escucharCampo('input-falla')">🎙️</button>
+                </div>
+            </div>
+
+            <div class="grupo-campo">
+                <label>Estatus del Servicio:</label>
+                <div class="input-wrapper">
+                    <select id="input-estatus">
+                        <option value="En Diagnóstico">En Diagnóstico</option>
+                        <option value="Esperando Repuesto">Esperando Repuesto</option>
+                        <option value="Reparado">Reparado</option>
+                        <option value="Sin Solución">Sin Solución</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-principal" onclick="procesarNuevaOrden()">Generar Ficha de Recepción</button>
+        </div>
+
+        <div class="resultado-container" id="resultado-container">
+            <div class="ficha-orden" id="ficha-render"></div>
+            <button class="btn-principal" id="btn-copiar" style="background-color: #2563eb; margin-top: 12px;">📋 Copiar Reporte para WhatsApp</button>
+        </div>
+
+        <div class="seccion-historial">
+            <h2 class="titulo-historial">Órdenes Guardadas en la App</h2>
+            <div class="lista-ordenes" id="lista-ordenes-container">
+                </div>
+        </div>
+    </div>
+
+    <nav class="nav-tabs">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">💬</span>
+            <span>Chat Técnico</span>
+        </a>
+        <a href="notas.html" class="nav-item">
+            <span class="nav-icon">📝</span>
+            <span>Mis Notas</span>
+        </a>
+        <a href="biblioteca.html" class="nav-item">
+            <span class="nav-icon">📘</span>
+            <span>Biblioteca</span>
+        </a>
+        <a href="hardware.html" class="nav-item">
+            <span class="nav-icon">🖼️</span>
+            <span>Hardware</span>
+        </a>
+        <a href="fallas.html" class="nav-item">
+            <span class="nav-icon">🛠️</span>
+            <span>Casos de Falla</span>
+        </a>
+        <a href="recepcion.html" class="nav-item active">
+            <span class="nav-icon">📋</span>
+            <span>Recepción</span>
+        </a>
+  </nav>
+      <script>
+        let reconocimientoVoz = null;
+        let campoActivoId = null;
+        let estaEscuchando = false;
+
+        // Cargar historial de órdenes al iniciar la pantalla
+        window.addEventListener('DOMContentLoaded', () => {
+            inicializarReconocimientoVoz();
+            renderizarHistorial();
+        });
+
+        // RECONOCIMIENTO DE VOZ INDIVIDUAL POR CAMPO
+        function inicializarReconocimientoVoz() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                console.log("El navegador no soporta SpeechRecognition de forma nativa.");
+                return;
+            }
+
+            reconocimientoVoz = new SpeechRecognition();
+            reconocimientoVoz.lang = 'es-VE'; // Configurado para modismos de Venezuela
+            reconocimientoVoz.continuous = false;
+            reconocimientoVoz.interimResults = false;
+
+            reconocimientoVoz.onstart = () => {
+                estaEscuchando = true;
+                if(campoActivoId) {
+                    const boton = document.querySelector(`#${campoActivoId} ~ .btn-input-mic`);
+                    if(boton) {
+                        boton.classList.add('mic-activo');
+                        boton.innerHTML = "🛑";
+                    }
+                }
+            };
+
+            reconocimientoVoz.onerror = (event) => {
+                console.error("Error de voz:", event.error);
+                forzarApagadoMic();
+            };
+
+            reconocimientoVoz.onend = () => {
+                forzarApagadoMic();
+            };
+
+            reconocimientoVoz.onresult = function(event) {
+                const textoEscuchado = event.results[0][0].transcript;
+                if (textoEscuchado.trim() !== "" && campoActivoId) {
+                    const el = document.getElementById(campoActivoId);
+                    if(el) {
+                        // Si ya tiene texto, le concatena el dictado nuevo con un espacio
+                        el.value = el.value ? el.value + " " + textoEscuchado : textoEscuchado;
+                    }
+                }
+            };
+        }
+
+        function escucharCampo(idCampo) {
+            if (!reconocimientoVoz) {
+                alert("Tu dispositivo o navegador no soporta el reconocimiento de voz.");
+                return;
+            }
+
+            if (estaEscuchando) {
+                reconocimientoVoz.stop();
+                if (campoActivoId === idCampo) return; // Si es el mismo, solo lo detiene
+            }
+
+            campoActivoId = idCampo;
+            reconocimientoVoz.start();
+        }
+
+        function forzarApagadoMic() {
+            estaEscuchando = false;
+            document.querySelectorAll('.btn-input-mic').forEach(boton => {
+                boton.classList.remove('mic-activo');
+                boton.innerHTML = "🎙️";
+            });
+            campoActivoId = null;
+        }
+
+        // PROCESAR FORMULARIO Y GENERAR FICHA EN PANTALLA
+        function procesarNuevaOrden() {
+            const fabricante = document.getElementById('input-fabricante').value.trim();
+            const modelo = document.getElementById('input-modelo').value.trim();
+            const serial = document.getElementById('input-serial').value.trim();
+            const falla = document.getElementById('input-falla').value.trim();
+            const estatus = document.getElementById('input-estatus').value;
+
+            if (!fabricante || !modelo) {
+                alert("Por favor, ingresa al menos la Marca y el Modelo del equipo para registrarlo.");
+                return;
+            }
+
+            const fechaVal = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const prefijoOrden = 'RE-' + Math.floor(1000 + Math.random() * 9000);
+
+            // Plantilla de Texto limpio estructurado para WhatsApp
+            const txtWhatsApp = `📋 RELECTRÓNICA - ORDEN DE SERVICIO\n` +
+                                `---------------------------------\n` +
+                                `Orden N°: ${prefijoOrden}\n` +
+                                `Fecha: ${fechaVal}\n` +
+                                `Fabricante: ${fabricante}\n` +
+                                `Modelo: ${modelo}\n` +
+                                `S/N: ${serial || 'No especificado'}\n` +
+                                `Falla: ${falla || 'Por revisar en banco'}\n` +
+                                `Estatus: ${estatus}\n` +
+                                `---------------------------------`;
+
+            // Renderizar la ficha visual estilo "Ficha de Taller"
+            const contenedorFicha = document.getElementById('ficha-render');
+            contenedorFicha.innerHTML = `
+                <div class="ficha-titulo">RECEPCIÓN DE EQUIPO</div>
+                <div class="ficha-header">
+                    <span>ORDEN: <strong>#${prefijoOrden}</strong></span>
+                    <span>FECHA: ${fechaVal}</span>
+                </div>
+                <div class="ficha-campo"><strong>Fabricante:</strong> ${fabricante}</div>
+                <div class="ficha-campo"><strong>Modelo del Dispositivo:</strong> ${modelo}</div>
+                <div class="ficha-campo"><strong>Número de Serie (S/N):</strong> ${serial || 'N/A'}</div>
+                <div class="ficha-campo"><strong>Diagnóstico Inicial:</strong> ${falla || 'Por revisar'}</div>
+                <div class="ficha-campo"><strong>Estatus del Servicio:</strong> <span class="badge-estatus">${estatus}</span></div>
+            `;
+
+            document.getElementById('resultado-container').style.display = 'block';
+
+            // Configurar el botón de copiar
+            const btnCopiar = document.getElementById('btn-copiar');
+            // Clonamos el botón para remover cualquier evento previo y evitar copias duplicadas
+            const nuevoBtnCopiar = btnCopiar.cloneNode(true);
+            btnCopiar.parentNode.replaceChild(nuevoBtnCopiar, btnCopiar);
+
+            nuevoBtnCopiar.addEventListener('click', () => {
+                navigator.clipboard.writeText(txtWhatsApp).then(() => {
+                    // Guardar en el historial de la App al copiar con éxito
+                    guardarEnHistorial({ prefijoOrden, fechaVal, fabricante, modelo, serial, falla, estatus, txtWhatsApp });
+                    alert("¡Ficha copiada al portapapeles! Guardada automáticamente en el historial.");
+                    
+                    // Limpiar el formulario para un nuevo ingreso
+                    document.getElementById('input-fabricante').value = '';
+                    document.getElementById('input-modelo').value = '';
+                    document.getElementById('input-serial').value = '';
+                    document.getElementById('input-falla').value = '';
+                    document.getElementById('resultado-container').style.display = 'none';
+                });
+            });
+            
+            nuevoBtnCopiar.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // SISTEMA DE ALMACENAMIENTO LOCAL (HISTORIAL)
+        function guardarEnHistorial(orden) {
+            let historial = localStorage.getItem('relectronica_ordenes_historial');
+            historial = historial ? JSON.parse(historial) : [];
+            
+            // Añadir al principio de la lista para ver siempre las más nuevas primero
+            historial.unshift(orden);
+            localStorage.setItem('relectronica_ordenes_historial', JSON.stringify(historial));
+            renderizarHistorial();
+        }
+
+        function renderizarHistorial() {
+            let historial = localStorage.getItem('relectronica_ordenes_historial');
+            const container = document.getElementById('lista-ordenes-container');
+            container.innerHTML = '';
+
+            if (!historial || JSON.parse(historial).length === 0) {
+                container.innerHTML = `<p style="font-size: 0.85rem; color: #a0aec0; text-align: center; padding: 10px;">No hay órdenes guardadas recientemente.</p>`;
+                return;
+            }
+
+            const listaOrdenes = JSON.parse(historial);
+
+            listaOrdenes.forEach((orden, index) => {
+                const item = document.createElement('div');
+                item.classList.add('item-orden-guardada');
+                item.innerHTML = `
+                    <div class="item-orden-header">
+                        <span>Orden: <strong>#${orden.prefijoOrden}</strong></span>
+                        <span>${orden.fechaVal}</span>
+                    </div>
+                    <div class="item-orden-detalles">
+                        <strong>${orden.fabricante} ${orden.modelo}</strong><br>
+                        <span style="font-size: 0.8rem; color: #a0aec0;">Falla: ${orden.falla || 'Por revisar'}</span><br>
+                        <span style="font-size: 0.8rem; color: #a855f7;">Estatus: ${orden.estatus}</span>
+                    </div>
+                    <button class="btn-recopiar" onclick="copiarHistorialDirecto(${index})">📋 Volver a Copiar Reporte</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function copiarHistorialDirecto(index) {
+            let historial = localStorage.getItem('relectronica_ordenes_historial');
+            if (historial) {
+                const listaOrdenes = JSON.parse(historial);
+                const orden = listaOrdenes[index];
+                if (orden && orden.txtWhatsApp) {
+                    navigator.clipboard.writeText(orden.txtWhatsApp).then(() => {
+                        alert(`¡Reporte de la Orden #${orden.prefijoOrden} vuelto a copiar con éxito!`);
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
