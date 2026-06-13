@@ -220,7 +220,6 @@
             transition: all 0.2s ease;
         }
 
-        /* NUEVO: Efecto pulsante en rojo para cuando el micrófono esté activo */
         .mic-escuchando {
             background-color: #ef4444 !important;
             border-color: #ef4444 !important;
@@ -232,6 +231,62 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.06); }
             100% { transform: scale(1); }
+        }
+
+        /* Estilos de la Ficha de Taller */
+        .ficha-orden {
+            background: #1e293b;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #f8fafc;
+            font-family: monospace;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .ficha-header {
+            border-bottom: 1px dashed #3b82f6;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .ficha-titulo {
+            color: #3b82f6;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+        .ficha-campo {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .ficha-campo strong {
+            color: #60a5fa;
+        }
+        .btn-copiar-orden {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .btn-copiar-orden:hover {
+            background: #2563eb;
+        }
+        .btn-orden-rapida {
+            background-color: #0284c7 !important;
+            border-color: #0284c7 !important;
+            color: white !important;
         }
 
         #send-btn {
@@ -349,8 +404,8 @@
         <div class="input-container">
             <input type="file" id="file-input" accept="image/*" style="display: none;">
             <button class="icon-btn" id="attach-btn" title="Adjuntar imagen">📎</button>
-            
             <button class="icon-btn" id="mic-btn" title="Hablar con el Bot" onclick="alternarMicrofono()">🎙️</button>
+            <button class="icon-btn btn-orden-rapida" id="order-btn" title="Nueva Orden de Recepción" onclick="iniciarOrdenGuiada()">📋</button>
                     
             <input type="text" id="input-field" placeholder="Escribe la falla o habla con manos libres..." autocomplete="off">
             <button id="send-btn">Enviar</button>
@@ -382,8 +437,8 @@
             <span class="nav-icon">🧮</span>
             <span>Cálculos</span>
         </a>
-                                        </nav>
-                                            <script>
+    </nav>
+        <script>
         const COHERE_API_KEY = "594SHpSQqQo0yWaa48hHgwDbRCijYSVD2biJOLLL"; 
         
         const chatContainer = document.getElementById('chat-container');
@@ -402,6 +457,17 @@
         let reconocimientoVoz = null;
         let estaEscuchando = false;
 
+        // Variables de Control para el Modo Recepción Guiada
+        let modoRecepcionActivo = false;
+        let pasoOrden = 0;
+        let datosOrden = {
+            fabricante: '',
+            modelo: '',
+            serial: '',
+            falla: '',
+            estatus: ''
+        };
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedChat = localStorage.getItem('relectronica_chat_history');
             if (savedChat) {
@@ -414,7 +480,6 @@
                 appendMessageToDOM('bot', welcomeText);
                 saveMessageToHistory('bot', welcomeText);
             }
-            // Inicializar motor de voz del celular
             inicializarReconocimientoVoz();
         });
 
@@ -494,6 +559,14 @@
             const query = inputField.value.trim();
             if (!query && !selectedImageBase64) return;
 
+            // Interceptador de flujo para el Modo Recepción
+            if (modoRecepcionActivo) {
+                appendMessageToDOM('user', query);
+                inputField.value = '';
+                procesarFlujoOrden(query);
+                return;
+            }
+
             const currentImageSrc = imagePreview.src;
             const activeImageBase64 = selectedImageBase64;
             
@@ -529,8 +602,6 @@
                 if (response.ok) {
                     appendMessageToDOM('bot', data.text);
                     saveMessageToHistory('bot', data.text);
-                    
-                    // Lee automáticamente la respuesta de Cohere en voz alta
                     hablarTexto(data.text);
                 } else {
                     appendMessageToDOM('bot', `⚠️ Error de validación: ${data.message || 'Error desconocido.'}`, true);
@@ -553,21 +624,120 @@
             if (e.key === 'Enter') sendMessage();
         });
 
+        // LÓGICA PASO A PASO - GENERADOR DE REPORTES
+        function iniciarOrdenGuiada() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            
+            modoRecepcionActivo = true;
+            pasoOrden = 1;
+            
+            const txtInicial = "Modo Recepción Activo. Por favor, indique el Fabricante o marca del equipo:";
+            appendMessageToDOM('bot', txtInicial);
+            hablarTexto(txtInicial);
+            
+            inputField.placeholder = "[1/5] Fabricante del equipo...";
+            inputField.focus();
+        }
 
-        // ==========================================================
-        // MOTOR REVISADO Y OPTIMIZADO PARA MANOS LIBRES POR VOZ
-        // ==========================================================
+        function procesarFlujoOrden(texto) {
+            switch(pasoOrden) {
+                case 1:
+                    datosOrden.fabricante = texto;
+                    pasoOrden = 2;
+                    solicitarSiguienteDato("Entendido. Ingrese el Modelo del Dispositivo:", "[2/5] Modelo exacto...");
+                    break;
+                case 2:
+                    datosOrden.modelo = texto;
+                    pasoOrden = 3;
+                    solicitarSiguienteDato("Copiado. Por favor, indique el Número de Serie completo:", "[3/5] Número de Serie (S/N)...");
+                    break;
+                case 3:
+                    datosOrden.serial = texto;
+                    pasoOrden = 4;
+                    solicitarSiguienteDato("Perfecto. Describa el Diagnóstico Inicial o Síntoma de la Falla:", "[4/5] Síntoma de la Falla...");
+                    break;
+                case 4:
+                    datosOrden.falla = texto;
+                    pasoOrden = 5;
+                    solicitarSiguienteDato("Por último, indique el Estatus del Servicio (ej: En Diagnóstico, Esperando Repuesto, Reparado):", "[5/5] Estatus del Servicio...");
+                    break;
+                case 5:
+                    datosOrden.estatus = texto;
+                    modoRecepcionActivo = false;
+                    pasoOrden = 0;
+                    construirFichaEstructural();
+                    break;
+            }
+        }
 
+        function solicitarSiguienteDato(pregunta, placeholder) {
+            appendMessageToDOM('bot', pregunta);
+            hablarTexto(pregunta);
+            inputField.placeholder = placeholder;
+        }
+
+        function construirFichaEstructural() {
+            const fechaVal = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const prefijoOrden = 'RE-' + Math.floor(1000 + Math.random() * 9000);
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', 'bot-message');
+            
+            const txtWhatsApp = `📋 RELECTRÓNICA - ORDEN DE SERVICIO\n` +
+                                `---------------------------------\n` +
+                                `Orden N°: ${prefijoOrden}\n` +
+                                `Fecha: ${fechaVal}\n` +
+                                `Fabricante: ${datosOrden.fabricante}\n` +
+                                `Modelo: ${datosOrden.modelo}\n` +
+                                `S/N: ${datosOrden.serial}\n` +
+                                `Falla: ${datosOrden.falla}\n` +
+                                `Estatus: ${datosOrden.estatus}\n` +
+                                `---------------------------------`;
+
+            msgDiv.innerHTML = `
+                <span class="msg-meta bot-meta">⚙️ Sistema Relectrónica:</span>
+                <div class="ficha-orden">
+                    <div class="ficha-titulo">RECEPCIÓN DE EQUIPO</div>
+                    <div class="ficha-header">
+                        <span>ORDEN: <strong>#${prefijoOrden}</strong></span>
+                        <span>FECHA: ${fechaVal}</span>
+                    </div>
+                    <div class="ficha-campo"><strong>Fabricante:</strong> ${datosOrden.fabricante}</div>
+                    <div class="ficha-campo"><strong>Modelo del Dispositivo:</strong> ${datosOrden.modelo}</div>
+                    <div class="ficha-campo"><strong>Número de Serie (S/N):</strong> ${datosOrden.serial}</div>
+                    <div class="ficha-campo"><strong>Diagnóstico Inicial:</strong> ${datosOrden.falla}</div>
+                    <div class="ficha-campo"><strong>Estatus del Servicio:</strong> <span style="color: #cbd5e1; background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">${datosOrden.estatus}</span></div>
+                    <button class="btn-copiar-orden" id="btn-copy-action">📋 Copiar para WhatsApp</button>
+                </div>
+            `;
+            
+            chatContainer.appendChild(msgDiv);
+            
+            msgDiv.querySelector('#btn-copy-action').addEventListener('click', () => {
+                navigator.clipboard.writeText(txtWhatsApp).then(() => {
+                    alert("¡Orden copiada al portapapeles! Ya puedes enviarla al cliente por WhatsApp.");
+                });
+            });
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            saveMessageToHistory('bot', `[Ficha Técnica Generada: Orden #${prefijoOrden}]`);
+            
+            inputField.placeholder = "Escribe la falla o habla con manos libres...";
+            const finMensaje = "Ficha de recepción completada con éxito. Ya la puedes copiar.";
+            hablarTexto(finMensaje);
+        }
+
+        // RECONOCIMIENTO DE VOZ AUTO-ENVÍO
         function inicializarReconocimientoVoz() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             
             if (!SpeechRecognition) {
-                console.log("El navegador no soporta SpeechRecognition de forma nativo.");
+                console.log("El navegador no soporta SpeechRecognition de forma nativa.");
                 return;
             }
 
             reconocimientoVoz = new SpeechRecognition();
-            reconocimientoVoz.lang = 'es-VE'; // Dialecto de Venezuela
+            reconocimientoVoz.lang = 'es-VE'; 
             reconocimientoVoz.continuous = false;
             reconocimientoVoz.interimResults = false;
 
@@ -591,7 +761,6 @@
                 const textoEscuchado = event.results[0][0].transcript;
                 if (textoEscuchado.trim() !== "") {
                     inputField.value = textoEscuchado;
-                    // Auto-envío en silencio inmediato
                     sendMessage();
                 }
             };
@@ -606,7 +775,7 @@
             if (estaEscuchando) {
                 reconocimientoVoz.stop();
             } else {
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel(); // Mudece al bot si estaba hablando antes
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel(); 
                 reconocimientoVoz.start();
             }
         }
@@ -615,15 +784,16 @@
             estaEscuchando = false;
             micBtn.classList.remove('mic-escuchando');
             micBtn.innerHTML = "🎙️";
-            inputField.placeholder = "Escribe la falla o habla con manos libres...";
+            if (!modoRecepcionActivo) {
+                inputField.placeholder = "Escribe la falla o habla con manos libres...";
+            }
         }
 
         function hablarTexto(texto) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Frena lecturas colgadas
+                window.speechSynthesis.cancel(); 
                 
-                // Remueve caracteres innecesarios o técnicos de pantalla para que la voz no se tranque
-                const textoLimpio = texto.replace(/[*#_⚡|⚠️|💡|📟|🎨|🔗|📉|🔋\[\]\(\)]/g, '');
+                const textoLimpio = texto.replace(/[*#_⚡|⚠️|💡|📟|🎨|🔗|📉|🔋\\[\\]\\(\\)]/g, '');
                 const utterance = new SpeechSynthesisUtterance(textoLimpio);
                 utterance.lang = 'es-ES';
                 
@@ -631,11 +801,10 @@
                 const vocesEspanol = voces.filter(voz => voz.lang.startsWith('es'));
                 
                 if (vocesEspanol.length > 0) {
-                    // Busca una voz estable en español del sistema operativo
                     utterance.voice = vocesEspanol[0]; 
                 }
 
-                utterance.rate = 1.05; // Un toque más dinámico para no aburrir
+                utterance.rate = 1.05; 
                 utterance.pitch = 1.0; 
 
                 window.speechSynthesis.speak(utterance);
