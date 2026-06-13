@@ -14,8 +14,8 @@
     </header>
 
     <div style="display: flex; gap: 10px; padding: 15px; background: #111c2c;">
-        <button onclick="exportarNotas()" class="btn-calc" style="background:#10b981; flex:1;">💾 Exportar Backup</button>
-        <button onclick="document.getElementById('importFile').click()" class="btn-calc" style="background:#64748b; flex:1;">📂 Importar Backup</button>
+        <button onclick="exportarNotas()" class="btn-calc" style="background:#10b981; flex:1;">💾 Exportar</button>
+        <button onclick="document.getElementById('importFile').click()" class="btn-calc" style="background:#64748b; flex:1;">📂 Importar</button>
         <input type="file" id="importFile" style="display:none" onchange="importarNotas(event)">
     </div>
 
@@ -23,9 +23,23 @@
         </div>
 
     <script>
-        // --- TUS FUNCIONES DE NOTAS ---
+        // --- FUNCIÓN PRINCIPAL DE CARGA ---
         function mostrarNotas() {
-            // Asegúrate de que esta función exista según tu código original
+            const contenedor = document.getElementById('notes-list-container');
+            const notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
+            
+            contenedor.innerHTML = ""; // Limpiar antes de pintar
+            
+            notas.forEach(nota => {
+                const div = document.createElement('div');
+                div.className = 'tech-card';
+                div.innerHTML = `
+                    <h3>${nota.titulo || 'Sin título'}</h3>
+                    <p>${nota.contenido || ''}</p>
+                    <button onclick="eliminarNota(${nota.id})" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px; margin-top:10px;">Eliminar</button>
+                `;
+                contenedor.appendChild(div);
+            });
         }
 
         // --- FUNCIONES DE BACKUP ---
@@ -59,6 +73,19 @@
             };
             reader.readAsText(file);
         }
+
+        // --- FUNCIÓN ELIMINAR ---
+        function eliminarNota(id) {
+            if (confirm("¿Estás seguro de que quieres borrar esta nota?")) {
+                let notas = JSON.parse(localStorage.getItem('relectronica_notas')) || [];
+                notas = notas.filter(nota => nota.id !== id);
+                localStorage.setItem('relectronica_notas', JSON.stringify(notas));
+                mostrarNotas();
+            }
+        }
+
+        // Cargar notas al iniciar
+        mostrarNotas();
     </script>
 </body>
 </html>
