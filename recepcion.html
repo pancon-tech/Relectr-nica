@@ -93,6 +93,30 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
+            position: relative;
+        }
+
+        /* Indicador visual de que estás editando una orden vieja */
+        .alerta-edicion {
+            display: none;
+            background-color: #2c2017;
+            border: 1px solid #d97706;
+            color: #fbbf24;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-cancelar-edicion {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
         }
 
         .grupo-campo {
@@ -248,7 +272,7 @@
             color: var(--text-color);
             padding: 10px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.9om;
             outline: none;
             width: 100%;
         }
@@ -263,14 +287,13 @@
             gap: 10px;
         }
 
-        /* COLORES DEL SEMÁFORO SEGÚN EL ESTATUS */
         .item-orden-guardada {
             border-radius: 10px;
             padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            border-left: 5px solid #cbd5e1; /* Por defecto */
+            border-left: 5px solid #cbd5e1;
         }
         
         .status-diagnostico { background-color: #16243d; border: 1px solid #2563eb; border-left: 5px solid #2563eb; }
@@ -312,7 +335,7 @@
         }
 
         .btn-recopiar {
-            flex: 2;
+            flex: 1.5;
             background-color: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
             color: #ffffff;
@@ -321,10 +344,26 @@
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .btn-editar-item {
+            flex: 1;
+            background-color: rgba(121, 40, 202, 0.15);
+            border: 1px solid var(--primary-color);
+            color: #a855f7;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         .select-cambiar-status {
-            flex: 1;
+            flex: 1.5;
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             color: #a0aec0;
@@ -386,10 +425,15 @@
     <div class="main-content">
         <div class="formulario-taller">
             
+            <div class="alerta-edicion" id="alerta-edicion">
+                <span>📝 Editando Servicio N° <strong id="texto-edicion-id"></strong></span>
+                <button class="btn-cancelar-edicion" onclick="salirModoEdicion()">Cancelar ✕</button>
+            </div>
+
             <div class="grupo-campo">
                 <label>Número de Servicio / Ticket:</label>
                 <div class="input-wrapper">
-                    <input type="text" id="input-ticket" placeholder="Ej: 0241, 1050 (O déjalo vacío para auto-generar)">
+                    <input type="text" id="input-ticket" placeholder="Ej: 0241, 1050 (O vacío para aleatorio)">
                 </div>
             </div>
 
@@ -420,7 +464,7 @@
             <div class="grupo-campo">
                 <label>Diagnóstico Inicial / Síntoma de la Falla:</label>
                 <div class="input-wrapper">
-                    <textarea id="input-falla" rows="2" placeholder="Ej: Falla de backlighting, reinicios continuos, no sintoniza..."></textarea>
+                    <textarea id="input-falla" rows="2" placeholder="Ej: Falla de backlighting, reinicios continuos..."></textarea>
                     <button class="btn-input-mic" onclick="escucharCampo('input-falla')">🎙️</button>
                 </div>
             </div>
@@ -437,7 +481,7 @@
                 </div>
             </div>
 
-            <button class="btn-principal" onclick="procesarNuevaOrden()">Generar Ficha de Recepción</button>
+            <button class="btn-principal" id="btn-ejecutar-formulario" onclick="procesarNuevaOrden()">Generar Ficha de Recepción</button>
         </div>
 
         <div class="resultado-container" id="resultado-container">
@@ -482,11 +526,14 @@
             <span class="nav-icon">📋</span>
             <span>Recepción</span>
         </a>
-                </nav>
+    </nav>
         <script>
         let reconocimientoVoz = null;
         let campoActivoId = null;
         let estaEscuchando = false;
+        
+        // Variable clave para saber si estamos editando una orden existente (-1 significa orden nueva)
+        let indiceOrdenEditando = -1;
 
         window.addEventListener('DOMContentLoaded', () => {
             inicializarReconocimientoVoz();
@@ -553,7 +600,7 @@
             campoActivoId = null;
         }
 
-        // PROCESAR FORMULARIO Y GENERAR REPORTES
+        // PROCESAR FORMULARIO (CREAR O ACTUALIZAR ORDEN)
         function procesarNuevaOrden() {
             const ticketManual = document.getElementById('input-ticket').value.trim();
             const fabricante = document.getElementById('input-fabricante').value.trim();
@@ -567,24 +614,25 @@
                 return;
             }
 
-            const fechaVal = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            // Usa el número ingresado o genera un prefijo automático aleatorio si se dejó vacío
-            const prefijoOrden = ticketManual ? ticketManual : 'RE-' + Math.floor(1000 + Math.random() * 9000);
+            let fechaVal = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            let prefijoOrden = ticketManual ? ticketManual : 'RE-' + Math.floor(1000 + Math.random() * 9000);
 
-            const txtWhatsApp = `📋 RELECTRÓNICA - ORDEN DE SERVICIO\n` +
-                                `---------------------------------\n` +
-                                `Orden/Servicio N°: ${prefijoOrden}\n` +
-                                `Fecha: ${fechaVal}\n` +
-                                `Fabricante: ${fabricante}\n` +
-                                `Modelo: ${modelo}\n` +
-                                `S/N: ${serial || 'No especificado'}\n` +
-                                `Falla: ${falla || 'Por revisar en banco'}\n` +
-                                `Estatus: ${estatus}\n` +
-                                `---------------------------------`;
+            // Si estamos editando, conservamos el número de orden y fecha originales a menos que se cambien manualmente
+            if (indiceOrdenEditando > -1) {
+                let historial = JSON.parse(localStorage.getItem('relectronica_ordenes_historial') || "[]");
+                const ordenVieja = historial[indiceOrdenEditando];
+                if (ordenVieja) {
+                    prefijoOrden = ticketManual ? ticketManual : ordenVieja.prefijoOrden;
+                    fechaVal = ordenVieja.fechaVal; // Mantiene la fecha de ingreso original
+                }
+            }
 
+            const txtWhatsApp = actualizarTextoWhatsApp({ prefijoOrden, fechaVal, fabricante, modelo, serial, falla, estatus });
+
+            // Generar vista previa visual de la ficha técnica
             const contenedorFicha = document.getElementById('ficha-render');
             contenedorFicha.innerHTML = `
-                <div class="ficha-titulo">RECEPCIÓN DE EQUIPO</div>
+                <div class="ficha-titulo">${indiceOrdenEditando > -1 ? 'ACTUALIZACIÓN DE ORDEN' : 'RECEPCIÓN DE EQUIPO'}</div>
                 <div class="ficha-header">
                     <span>N° SERVICIO: <strong>#${prefijoOrden}</strong></span>
                     <span>FECHA: ${fechaVal}</span>
@@ -602,31 +650,49 @@
             const nuevoBtnCopiar = btnCopiar.cloneNode(true);
             btnCopiar.parentNode.replaceChild(nuevoBtnCopiar, btnCopiar);
 
+            if (indiceOrdenEditando > -1) {
+                nuevoBtnCopiar.innerText = "📋 Guardar Cambios y Copiar";
+            } else {
+                nuevoBtnCopiar.innerText = "📋 Copiar Reporte para WhatsApp";
+            }
+
             nuevoBtnCopiar.addEventListener('click', () => {
                 navigator.clipboard.writeText(txtWhatsApp).then(() => {
-                    guardarEnHistorial({ prefijoOrden, fechaVal, fabricante, modelo, serial, falla, estatus, txtWhatsApp });
-                    alert("¡Ficha copiada al portapapeles y guardada en el historial!");
+                    const nuevaOrdenData = { prefijoOrden, fechaVal, fabricante, modelo, serial, falla, estatus, txtWhatsApp };
                     
-                    // Limpieza automática para el siguiente registro
-                    document.getElementById('input-ticket').value = '';
-                    document.getElementById('input-fabricante').value = '';
-                    document.getElementById('input-modelo').value = '';
-                    document.getElementById('input-serial').value = '';
-                    document.getElementById('input-falla').value = '';
-                    document.getElementById('resultado-container').style.display = 'none';
+                    guardarEnHistorial(nuevaOrdenData);
+                    alert(indiceOrdenEditando > -1 ? "¡Cambios guardados y ficha copiada!" : "¡Ficha copiada al portapapeles y guardada en el historial!");
+                    
+                    // Salir del modo edición y limpiar
+                    salirModoEdicion();
+                    limpiarFormularioCompleto();
                 });
             });
             
             nuevoBtnCopiar.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // CONTROL CLASES SEMÁFORO
+        // CONTROL CLASES SEMÁFORO Y VISUALES
         function obtenerClaseTarjeta(estatus) {
             if (estatus === "En Diagnóstico") return "status-diagnostico";
             if (estatus === "Esperando Repuesto") return "status-repuesto";
             if (estatus === "Reparado") return "status-reparado";
             if (estatus === "Sin Solución") return "status-sin-solucion";
             return "";
+        }
+
+        // REGENERAR Y COPIAR TEXTO WHATSAPP DESDE EL HISTORIAL
+        function actualizarTextoWhatsApp(orden) {
+            return `📋 RELECTRÓNICA - ORDEN DE SERVICIO\n` +
+                   `---------------------------------\n` +
+                   `Orden/Servicio N°: ${orden.prefijoOrden}\n` +
+                   `Fecha: ${orden.fechaVal}\n` +
+                   `Fabricante: ${orden.fabricante}\n` +
+                   `Modelo: ${orden.modelo}\n` +
+                   `S/N: ${orden.serial || 'No especificado'}\n` +
+                   `Falla: ${orden.falla || 'Por revisar en banco'}\n` +
+                   `Estatus: ${orden.estatus}\n` +
+                   `---------------------------------`;
         }
 
         function obtenerClaseBadge(estatus) {
@@ -641,7 +707,15 @@
         function guardarEnHistorial(orden) {
             let historial = localStorage.getItem('relectronica_ordenes_historial');
             historial = historial ? JSON.parse(historial) : [];
-            historial.unshift(orden);
+            
+            if (indiceOrdenEditando > -1) {
+                // Reemplaza los datos existentes en la misma posición de la tarjeta
+                historial[indiceOrdenEditando] = orden;
+            } else {
+                // Agrega una nueva orden de primera en la lista
+                historial.unshift(orden);
+            }
+            
             localStorage.setItem('relectronica_ordenes_historial', JSON.stringify(historial));
             renderizarHistorial();
         }
@@ -674,6 +748,7 @@
                     </div>
                     <div class="bloque-botones-item">
                         <button class="btn-recopiar" onclick="copiarHistorialDirecto(${index})">📋 Copiar</button>
+                        <button class="btn-editar-item" onclick="cargarOrdenParaEditar(${index})">✏️ Editar</button>
                         <select class="select-cambiar-status" onchange="actualizarEstatusOrden(${index}, this.value)">
                             <option value="" disabled selected>⚡ Estado</option>
                             <option value="En Diagnóstico">En Diagnóstico</option>
@@ -687,18 +762,61 @@
             });
         }
 
-        // REGENERAR Y COPIAR TEXTO WHATSAPP DESDE EL HISTORIAL
-        function actualizarTextoWhatsApp(orden) {
-            return `📋 RELECTRÓNICA - ORDEN DE SERVICIO\n` +
-                   `---------------------------------\n` +
-                   `Orden/Servicio N°: ${orden.prefijoOrden}\n` +
-                   `Fecha: ${orden.fechaVal}\n` +
-                   `Fabricante: ${orden.fabricante}\n` +
-                   `Modelo: ${orden.modelo}\n` +
-                   `S/N: ${orden.serial || 'No especificado'}\n` +
-                   `Falla: ${orden.falla || 'Por revisar en banco'}\n` +
-                   `Estatus: ${orden.estatus}\n` +
-                   `---------------------------------`;
+        // SUBIR DATOS AL FORMULARIO PRINCIPAL PARA MODIFICARLOS
+        function cargarOrdenParaEditar(index) {
+            let historial = localStorage.getItem('relectronica_ordenes_historial');
+            if (!historial) return;
+            
+            const listaOrdenes = JSON.parse(historial);
+            const orden = listaOrdenes[index];
+            
+            if (orden) {
+                indiceOrdenEditando = index;
+                
+                // Rellenar las casillas de texto con los datos guardados
+                document.getElementById('input-ticket').value = orden.prefijoOrden;
+                document.getElementById('input-fabricante').value = orden.fabricante;
+                document.getElementById('input-modelo').value = orden.modelo;
+                document.getElementById('input-serial').value = orden.serial || '';
+                document.getElementById('input-falla').value = orden.falla || '';
+                document.getElementById('input-estatus').value = orden.estatus;
+
+                // Mostrar el aviso de que estamos en modo edición
+                document.getElementById('texto-edicion-id').innerText = orden.prefijoOrden;
+                document.getElementById('alerta-edicion').style.display = 'flex';
+                
+                // Cambiar el estilo del botón principal
+                const btnForm = document.getElementById('btn-ejecutar-formulario');
+                btnForm.innerText = "Guardar Cambios en la Orden";
+                btnForm.style.backgroundColor = "#d97706"; // Poner botón en naranja de edición
+
+                // Ocultar cualquier vista previa vieja para evitar confusiones
+                document.getElementById('resultado-container').style.display = 'none';
+
+                // Scroll automático hacia arriba de la pantalla del teléfono
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // CANCELAR Y SALIR DEL MODO EDICIÓN
+        function salirModoEdicion() {
+            indiceOrdenEditando = -1;
+            document.getElementById('alerta-edicion').style.display = 'none';
+            
+            const btnForm = document.getElementById('btn-ejecutar-formulario');
+            btnForm.innerText = "Generar Ficha de Recepción";
+            btnForm.style.backgroundColor = "var(--primary-color)";
+            
+            limpiarFormularioCompleto();
+        }
+
+        function limpiarFormularioCompleto() {
+            document.getElementById('input-ticket').value = '';
+            document.getElementById('input-fabricante').value = '';
+            document.getElementById('input-modelo').value = '';
+            document.getElementById('input-serial').value = '';
+            document.getElementById('input-falla').value = '';
+            document.getElementById('resultado-container').style.display = 'none';
         }
 
         function copiarHistorialDirecto(index) {
@@ -714,7 +832,7 @@
             }
         }
 
-        // RE-ESTABLECER ESTATUS DIRECTAMENTE DESDE LA TARJETA
+        // ACTUALIZAR ESTATUS RÁPIDO DESDE LA BARRA DESPLEGABLE
         function actualizarEstatusOrden(index, nuevoEstatus) {
             let historial = localStorage.getItem('relectronica_ordenes_historial');
             if (historial) {
@@ -749,6 +867,7 @@
             if (confirm("¿Estás seguro de que quieres vaciar todo el registro de órdenes? Esta acción no se puede deshacer.")) {
                 localStorage.removeItem('relectronica_ordenes_historial');
                 renderizarHistorial();
+                if (indiceOrdenEditando > -1) salirModoEdicion();
             }
         }
     </script>
