@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relectrónica - Casos de Falla</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --bg-color: #0b131f;
+            --chat-bg: #111c2c;
+            --text-color: #ffffff;
+            --primary-color: #7928ca;
+            --border-color: #22344d;
+            --card-bg: #162235;
+        }
+        body.light-mode {
+            --bg-color: #f3f4f6;
+            --chat-bg: #ffffff;
+            --text-color: #1f2937;
+            --card-bg: #e5e7eb;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: var(--chat-bg); padding: 12px; display: flex; align-items: center; border-bottom: 1px solid var(--border-color); gap: 12px; }
+        .main-content { flex:1; padding: 20px; margin-bottom: 75px; max-width: 800px; margin: 0 auto 75px auto; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 12px; cursor: pointer; }
+        .card-content { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color); }
+        nav.nav-tabs { position: fixed; bottom:0; left:0; width:100%; height:58px; background: var(--chat-bg); border-top:1px solid var(--border-color); display: flex; z-index:100; }
+        .nav-item { flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #a0aec0; font-size:0.7rem; gap:2px; }
+        .nav-item.active { color: #a855f7; }
+        .nav-icon { font-size: 1.3rem; }
+        .theme-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: auto; color: var(--text-color); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container"><img src="logo.png" width="40"></div>
+        <h1>Casos de Falla</h1>
+        <button id="themeToggle" class="theme-btn">🌓</button>
+    </header>
+    <div class="main-content">
+        <input type="text" id="searchFall" placeholder="Buscar..." style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; background:var(--chat-bg); color:var(--text-color); border:1px solid var(--border-color);">
+        <div id="casos-list"></div>
+    </div>
+    <nav class="nav-tabs">
+        <a href="index.html" class="nav-item"><span class="nav-icon">💬</span><span>Chat</span></a>
+        <a href="notas.html" class="nav-item"><span class="nav-icon">📝</span><span>Notas</span></a>
+        <a href="biblioteca.html" class="nav-item"><span class="nav-icon">📘</span><span>Biblioteca</span></a>
+        <a href="hardware.html" class="nav-item"><span class="nav-icon">🖼️</span><span>Hardware</span></a>
+        <a href="calculadoras.html" class="nav-item"><span class="nav-icon">🧮</span><span>Cálculos</span></a>
+        <a href="fallas.html" class="nav-item active"><span class="nav-icon">🛠️</span><span>Casos</span></a>
+        <a href="recepcion.html" class="nav-item"><span class="nav-icon">📋</span><span>Recepción</span></a>
+    </nav>
+    <script>
+        function applyTheme(theme) { if(theme==='light') document.body.classList.add('light-mode'); else document.body.classList.remove('light-mode'); localStorage.setItem('relectronica_theme', theme); }
+        const savedTheme = localStorage.getItem('relectronica_theme')||'dark';
+        applyTheme(savedTheme);
+        document.getElementById('themeToggle').addEventListener('click',()=>{ applyTheme(document.body.classList.contains('light-mode')?'dark':'light'); });
+
+        let casos = JSON.parse(localStorage.getItem('relectronica_casos')||'[]');
+        if(casos.length===0){
+            casos = [
+                { titulo: "Samsung / LG - Reinicio constante o líneas", contenido: "Método de aislamiento. Colocar cinta plástica delgada (2-4mm) sobre los pines de señales de reloj (CLK) en el cable flex defectuoso." },
+                { titulo: "Smart TV - Audio sin imagen", contenido: "Falla de backlight. Prueba con linterna. Reemplazar tira LED completa y bajar corriente del inversor." },
+                { titulo: "Pantalla blanca o gris sin video", contenido: "Revisar fusible T-CON, medir VCC 3.3V y AVDD 15V. Si AVDD=0, IC DC-DC dañado." }
+            ];
+            localStorage.setItem('relectronica_casos', JSON.stringify(casos));
+        }
+        function renderizar() {
+            const container = document.getElementById('casos-list');
+            container.innerHTML = casos.map((c, i) => `<div class="card" onclick="toggleCard(this)"><h3>${escapeHtml(c.titulo)}</h3><div class="card-content">${escapeHtml(c.contenido).replace(/\n/g,'<br>')}</div></div>`).join('');
+        }
+        function escapeHtml(str) { return str.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
+        function toggleCard(card) { const content = card.querySelector('.card-content'); content.style.display = content.style.display === 'block' ? 'none' : 'block'; }
+        document.getElementById('searchFall').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.card').forEach(card => card.style.display = card.innerText.toLowerCase().includes(term) ? 'block' : 'none');
+        });
+        renderizar();
+    </script>
+</body>
+</html>
